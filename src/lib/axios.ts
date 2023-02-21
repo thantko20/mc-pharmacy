@@ -10,7 +10,7 @@ export const axios = originalAxios.create({
 
 axios.interceptors.response.use(
   (response) => {
-    return response.data;
+    return response;
   },
   (error) => {
     if (originalAxios.isAxiosError(error)) {
