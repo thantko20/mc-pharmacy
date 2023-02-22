@@ -1,4 +1,5 @@
 export type TMedicine = {
+  _id: string;
   id: string;
   name: string;
   companyName: string;
