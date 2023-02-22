@@ -48,7 +48,9 @@ export const MedicineCard = ({ medicine }: { medicine: TMedicine }) => {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Typography fontWeight={600}>{medicine.price} MMK</Typography>
+        <Typography fontWeight={600}>
+          {medicine.price.toLocaleString()} MMK
+        </Typography>
         <Button
           size='small'
           variant='outlined'
