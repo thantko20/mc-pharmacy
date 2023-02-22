@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { Box, Grid, Pagination, Skeleton, Stack } from '@mui/material';
+import { Grid, Pagination, Stack } from '@mui/material';
 import { MedicineCard } from './MedicineCard';
 import { useGetMedicines } from '../api/getMedicines';
-import usePagination from '@mui/material/usePagination/usePagination';
 
 export const MedicineCardContainer = () => {
   const [page, setPage] = useState(1);
