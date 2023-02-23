@@ -22,14 +22,14 @@ export const router = createBrowserRouter([
         path: '/auth/register',
         element: <div>Register Page</div>,
       },
+      {
+        path: '/test',
+        element: <TestPage />,
+      },
+      {
+        path: '/room/:userId',
+        element: <RoomPage />,
+      },
     ],
-  },
-  {
-    path: '/test',
-    element: <TestPage />,
-  },
-  {
-    path: '/room/:userId',
-    element: <RoomPage />,
   },
 ]);
