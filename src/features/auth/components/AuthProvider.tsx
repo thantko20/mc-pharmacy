@@ -8,6 +8,7 @@ import {
 import { TUser } from '../types';
 import { TSuccessResponse } from '@/types';
 import { MyStorage } from '@/utils/MyStorage';
+import { socket } from '@/lib/socket-io';
 
 type TAuthContext = {
   user: TUser | null;
@@ -62,6 +63,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     checkUser();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      socket.connect();
+    } else {
+      socket.disconnect();
+    }
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [user]);
 
   const loginFn = ({
     accessToken,
