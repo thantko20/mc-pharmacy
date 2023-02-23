@@ -8,6 +8,13 @@ export const axios = originalAxios.create({
   },
 });
 
+axios.interceptors.request.use(function (config) {
+  const token = MyStorage.getAccessToken();
+  config.headers.Authorization = token;
+
+  return config;
+});
+
 axios.interceptors.response.use(
   (response) => {
     return response.data;

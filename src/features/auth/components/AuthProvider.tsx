@@ -1,4 +1,10 @@
-import { ReactNode, createContext, useEffect, useState } from 'react';
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { TUser } from '../types';
 import { TSuccessResponse } from '@/types';
 import { MyStorage } from '@/utils/MyStorage';
@@ -33,6 +39,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsCheckingAuth(true);
         const res = await fetch(
           'https://pharmacy-delivery.onrender.com/api/users/me/info',
+          {
+            headers: {
+              authorization: MyStorage.getAccessToken() as string,
+              'Content-Type': 'application/json',
+            },
+          },
         );
 
         if (!res.ok && res.status === 401) {
@@ -73,3 +85,5 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     </AuthContext.Provider>
   );
 };
+
+export const useAuth = () => useContext(AuthContext);

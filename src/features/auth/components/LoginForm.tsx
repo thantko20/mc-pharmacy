@@ -1,6 +1,18 @@
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import {
+  Box,
+  Button,
+  Container,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { useLogin } from '../api/login';
+import { useAuth } from './AuthProvider';
+import { useNavigate } from 'react-router-dom';
+import { LoadingButton } from '@mui/lab';
 
 const loginSchema = z.object({
   email: z
@@ -18,9 +30,59 @@ export const LoginForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<TLoginFormData>({
     resolver: zodResolver(loginSchema),
   });
 
-  return <div>Login Form</div>;
+  const loginMutation = useLogin();
+
+  const { loginFn } = useAuth();
+
+  const navigate = useNavigate();
+
+  const onSubmit: SubmitHandler<TLoginFormData> = (data) => {
+    loginMutation.mutate(data, {
+      onSuccess: (data) => {
+        loginFn(data.payload);
+        navigate('/');
+      },
+    });
+  };
+
+  return (
+    <Container maxWidth='sm'>
+      <Stack direction='column'>
+        <Typography variant='h4' gutterBottom>
+          Login
+        </Typography>
+        <Stack component='form' onSubmit={handleSubmit(onSubmit)} spacing={4}>
+          <TextField
+            error={!!errors.email?.message}
+            id='email'
+            {...register('email')}
+            label='Email'
+            helperText={errors.email?.message}
+          />
+          <TextField
+            error={!!errors.password?.message}
+            id='password'
+            {...register('password')}
+            label='Password'
+            helperText={errors.password?.message}
+          />
+          <LoadingButton
+            type='submit'
+            sx={{
+              alignSelf: 'flex-end',
+            }}
+            variant='contained'
+            size='large'
+            loading={loginMutation.isLoading}
+          >
+            Login
+          </LoadingButton>
+        </Stack>
+      </Stack>
+    </Container>
+  );
 };
