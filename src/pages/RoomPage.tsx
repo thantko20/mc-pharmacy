@@ -12,6 +12,8 @@ import Twilio, {
 import { useState, useEffect, useRef } from 'react';
 import { axios } from '@/lib/axios';
 import { TSuccessResponse } from '@/types';
+import { Box, Button } from '@mui/material';
+import { SectionContainer } from '@/components/SectionContainer';
 
 type TVideoTracks = (LocalVideoTrack | RemoteVideoTrack | null)[];
 
@@ -69,7 +71,7 @@ const Participant = ({ participant }: { participant: TParticipant }) => {
     if (videoTrack) {
       videoTrack.attach(videoRef.current);
       return () => {
-        videoTrack.detach();
+        videoTrack.detach(videoRef.current);
       };
     }
   }, [videoTracks]);
@@ -79,7 +81,7 @@ const Participant = ({ participant }: { participant: TParticipant }) => {
     if (audioTrack) {
       audioTrack.attach(audioRef.current);
       return () => {
-        audioTrack.detach();
+        audioTrack.detach(audioRef.current);
       };
     }
   }, [audioTracks]);
@@ -87,7 +89,14 @@ const Participant = ({ participant }: { participant: TParticipant }) => {
   return (
     <div className='participant'>
       <h3>{participant.identity}</h3>
-      <video ref={videoRef} autoPlay={true} />
+
+      <Box
+        component='video'
+        ref={videoRef}
+        width='100%'
+        maxWidth='400px'
+        height='200px'
+      ></Box>
       <audio ref={audioRef} autoPlay={true} muted={false} />
     </div>
   );
@@ -100,6 +109,7 @@ const RoomPage = () => {
   const disconnectRoom = () => {
     setRoom((currentRoom) => {
       if (currentRoom && currentRoom.localParticipant.state === 'connected') {
+        setParticipants([]);
         currentRoom.disconnect();
         return null;
       }
@@ -152,22 +162,31 @@ const RoomPage = () => {
   ));
 
   return (
-    <div className='room'>
-      <h2>Room: {room?.name}</h2>
-      <button onClick={disconnectRoom}>Log out</button>
-      <div className='local-participant'>
-        {room ? (
-          <Participant
-            key={room.localParticipant.sid}
-            participant={room.localParticipant}
-          />
-        ) : (
-          ''
-        )}
+    <SectionContainer>
+      <div className='room'>
+        <div className='local-participant'>
+          {room ? (
+            <>
+              <Participant
+                key={room.localParticipant.sid}
+                participant={room.localParticipant}
+              />
+              <Button
+                variant='contained'
+                color='error'
+                onClick={disconnectRoom}
+              >
+                Hangup
+              </Button>
+            </>
+          ) : (
+            ''
+          )}
+        </div>
+        <h3>Remote Participants</h3>
+        <div className='remote-participants'>{remoteParticipants}</div>
       </div>
-      <h3>Remote Participants</h3>
-      <div className='remote-participants'>{remoteParticipants}</div>
-    </div>
+    </SectionContainer>
   );
 };
 
