@@ -1,8 +1,11 @@
+import { useEffect } from 'react';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 import { SectionContainer } from './SectionContainer';
 import { useAuth } from '@/features/auth/components/AuthProvider';
+import { socket } from '@/lib/socket-io';
+import { listenCall } from '@/features/calls/api/listenCall';
 
 export const Header = () => {
   const { user, logoutFn } = useAuth();
@@ -44,6 +47,16 @@ export const Header = () => {
 };
 
 export const MainLayout = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    socket.on('calling', listenCall);
+
+    return () => {
+      socket.off('calling', listenCall);
+    };
+  }, []);
+
   return (
     <div>
       <Header />

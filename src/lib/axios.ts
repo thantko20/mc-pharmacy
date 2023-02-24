@@ -2,7 +2,7 @@ import originalAxios from 'axios';
 import { MyStorage } from '../utils/MyStorage';
 
 export const axios = originalAxios.create({
-  baseURL: 'https://pharmacy-delivery.onrender.com/api',
+  baseURL: 'https://pharmacydelivery-production.up.railway.app/api',
   headers: {
     Authorization: MyStorage.getAccessToken(),
   },

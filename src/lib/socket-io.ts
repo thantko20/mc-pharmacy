@@ -1,7 +1,7 @@
 import { MyStorage } from '@/utils/MyStorage';
 import { io } from 'socket.io-client';
 
-export const socket = io('https://pharmacy-delivery.onrender.com', {
+export const socket = io('https://pharmacydelivery-production.up.railway.app', {
   autoConnect: false,
   auth(cb) {
     cb({

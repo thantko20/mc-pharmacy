@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         setIsCheckingAuth(true);
         const res = await fetch(
-          'https://pharmacy-delivery.onrender.com/api/users/me/info',
+          'https://pharmacydelivery-production.up.railway.app/api/users/me/info',
           {
             headers: {
               authorization: MyStorage.getAccessToken() as string,

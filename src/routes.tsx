@@ -27,7 +27,7 @@ export const router = createBrowserRouter([
         element: <TestPage />,
       },
       {
-        path: '/room/:userId',
+        path: '/rooms/:userId',
         element: <RoomPage />,
       },
     ],

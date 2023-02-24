@@ -10,10 +10,12 @@ import Twilio, {
   Track,
 } from 'twilio-video';
 import { useState, useEffect, useRef } from 'react';
-import { axios } from '@/lib/axios';
-import { TSuccessResponse } from '@/types';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import { SectionContainer } from '@/components/SectionContainer';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { socket } from '@/lib/socket-io';
+import { useAuth } from '@/features/auth/components/AuthProvider';
+import { TUser } from '@/features/auth/types';
 
 type TVideoTracks = (LocalVideoTrack | RemoteVideoTrack | null)[];
 
@@ -106,15 +108,38 @@ const RoomPage = () => {
   const [room, setRoom] = useState<Room | null>(null);
   const [participants, setParticipants] = useState<TParticipant[]>([]);
 
+  const { user } = useAuth();
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { token, roomName, callee } = location.state as {
+    token: string;
+    roomName: string;
+    callee: TUser;
+  };
+
+  if (!callee._id) {
+    return <div>Need callee id</div>;
+  }
+
   const disconnectRoom = () => {
     setRoom((currentRoom) => {
       if (currentRoom && currentRoom.localParticipant.state === 'connected') {
         setParticipants([]);
+        currentRoom.localParticipant.tracks.forEach((track) =>
+          track.unpublish(),
+        );
         currentRoom.disconnect();
         return null;
       }
       return currentRoom;
     });
+  };
+
+  const hangUp = () => {
+    disconnectRoom();
+    navigate('/test');
   };
 
   useEffect(() => {
@@ -128,22 +153,27 @@ const RoomPage = () => {
       );
     };
 
-    axios
-      .post<never, TSuccessResponse<{ token: string; roomName: string }>>(
-        '/rooms',
-        { roomName: 'haahhahha' },
-      )
-      .then((data) => {
-        Twilio.connect(data.payload.token, {
-          name: 'haahhahha',
-        }).then((room) => {
-          console.log(room);
-          setRoom(room);
-          room.on('participantConnected', participantConnected);
-          room.on('participantDisconnected', participantDisconnected);
-          room.participants.forEach(participantConnected);
+    const connectRoom = async () => {
+      try {
+        const room = await Twilio.connect(token, {
+          name: roomName,
         });
-      });
+
+        setRoom(room);
+        socket.emit('start-call', {
+          callerId: user?._id,
+          calleeId: callee._id,
+          roomName: room.name,
+        });
+        room.on('participantConnected', participantConnected);
+        room.on('participantDisconnected', participantDisconnected);
+        room.participants.forEach(participantConnected);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    connectRoom();
 
     return () => {
       setRoom((currentRoom) => {
@@ -157,34 +187,35 @@ const RoomPage = () => {
     };
   }, []);
 
-  const remoteParticipants = participants.map((participant) => (
-    <Participant key={participant.sid} participant={participant} />
-  ));
-
   return (
     <SectionContainer>
-      <div className='room'>
-        <div className='local-participant'>
+      <div>
+        <div>
           {room ? (
-            <>
-              <Participant
-                key={room.localParticipant.sid}
-                participant={room.localParticipant}
-              />
-              <Button
-                variant='contained'
-                color='error'
-                onClick={disconnectRoom}
-              >
+            <Stack
+              direction='column'
+              spacing={2}
+              justifyContent='center'
+              alignItems='center'
+            >
+              <Stack direction={{ xs: 'column', md: 'row' }} spacing={4}>
+                <Participant
+                  key={room.localParticipant.sid}
+                  participant={room.localParticipant}
+                />
+                {participants[0] ? (
+                  <Participant
+                    key={participants[0].sid}
+                    participant={participants[0]}
+                  />
+                ) : null}
+              </Stack>
+              <Button variant='contained' color='error' onClick={hangUp}>
                 Hangup
               </Button>
-            </>
-          ) : (
-            ''
-          )}
+            </Stack>
+          ) : null}
         </div>
-        <h3>Remote Participants</h3>
-        <div className='remote-participants'>{remoteParticipants}</div>
       </div>
     </SectionContainer>
   );
