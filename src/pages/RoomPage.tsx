@@ -12,7 +12,7 @@ import Twilio, {
 import { useState, useEffect, useRef } from 'react';
 import { Box, Button, Stack } from '@mui/material';
 import { SectionContainer } from '@/components/SectionContainer';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { socket } from '@/lib/socket-io';
 import { useAuth } from '@/features/auth/components/AuthProvider';
 import { TUser } from '@/features/auth/types';
@@ -112,14 +112,19 @@ const RoomPage = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const { roomName } = useParams();
 
-  const { token, roomName, callee } = location.state as {
+  if (!roomName || typeof roomName !== 'string') {
+    navigate(-1);
+  }
+
+  const { token, callee, isCaller } = location.state as {
     token: string;
-    roomName: string;
-    callee: TUser;
+    callee?: TUser;
+    isCaller?: boolean;
   };
 
-  if (!callee._id) {
+  if (isCaller && !callee?._id) {
     return <div>Need callee id</div>;
   }
 
@@ -160,11 +165,13 @@ const RoomPage = () => {
         });
 
         setRoom(room);
-        socket.emit('start-call', {
-          callerId: user?._id,
-          calleeId: callee._id,
-          roomName: room.name,
-        });
+        if (isCaller) {
+          socket.emit('start-call', {
+            callerId: user?._id,
+            calleeId: callee!._id,
+            roomName: room.name,
+          });
+        }
         room.on('participantConnected', participantConnected);
         room.on('participantDisconnected', participantDisconnected);
         room.participants.forEach(participantConnected);

@@ -17,7 +17,7 @@ const UserListItem = ({ user }: { user: TUser }) => {
       const { payload } = await getTokenAndRoomName();
 
       navigate(`/rooms/${payload.roomName}`, {
-        state: { token: payload.token, callee: user },
+        state: { token: payload.token, callee: user, isCaller: true },
       });
     } catch (error) {
       console.log(error);
