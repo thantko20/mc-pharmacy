@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Paper, Slide, Stack, Typography } from '@mui/material';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 import { SectionContainer } from './SectionContainer';
@@ -56,25 +56,49 @@ export const Header = () => {
 
 export const MainLayout = () => {
   const navigate = useNavigate();
-  const toastRef = useRef<string | null>(null);
 
   const listenCall = (payload: TListenCallPayload) => {
-    toastRef.current = toast.custom(
-      <Stack>
-        <Typography variant='h6'>{payload.caller.name}</Typography>
-        <Button
-          variant='contained'
-          color='success'
-          onClick={() => {
-            toast.dismiss(toastRef.current as string);
-            navigate(`/rooms/${payload.roomName}`, {
-              state: { token: payload.token, roomName: payload.roomName },
-            });
-          }}
-        >
-          Pick Up
-        </Button>
-      </Stack>,
+    toast.custom(
+      (t) => (
+        <Slide in={t.visible} mountOnEnter unmountOnExit direction='down'>
+          <Stack
+            direction='row'
+            spacing={4}
+            bgcolor='white'
+            component={Paper}
+            padding={2}
+            elevation={4}
+          >
+            <Typography variant='h6'>{payload.caller.name}</Typography>
+            <Stack direction='row' spacing={2}>
+              <Button
+                variant='contained'
+                color='success'
+                onClick={() => {
+                  toast.dismiss(t.id);
+                  navigate(`/rooms/${payload.roomName}`, {
+                    state: { token: payload.token, roomName: payload.roomName },
+                  });
+                }}
+              >
+                Pick Up
+              </Button>
+              <Button
+                variant='contained'
+                color='error'
+                onClick={() => {
+                  toast.dismiss(t.id);
+                }}
+              >
+                Dismiss
+              </Button>
+            </Stack>
+          </Stack>
+        </Slide>
+      ),
+      {
+        duration: Infinity,
+      },
     );
   };
 
