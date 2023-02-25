@@ -5,9 +5,9 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { SectionContainer } from './SectionContainer';
 import { useAuth } from '@/features/auth/components/AuthProvider';
 import { socket } from '@/lib/socket-io';
-import { listenCall } from '@/features/calls/socket/listenCall';
 import { toast } from 'react-hot-toast';
 import { TUser } from '@/features/auth/types';
+import { CallNotification } from '@/features/calls/components/CallNotification';
 
 type TListenCallPayload = {
   roomName: string;
@@ -55,63 +55,9 @@ export const Header = () => {
 };
 
 export const MainLayout = () => {
-  const navigate = useNavigate();
-
-  const listenCall = (payload: TListenCallPayload) => {
-    toast.custom(
-      (t) => (
-        <Slide in={t.visible} mountOnEnter unmountOnExit direction='down'>
-          <Stack
-            direction='row'
-            spacing={4}
-            bgcolor='white'
-            component={Paper}
-            padding={2}
-            elevation={4}
-          >
-            <Typography variant='h6'>{payload.caller.name}</Typography>
-            <Stack direction='row' spacing={2}>
-              <Button
-                variant='contained'
-                color='success'
-                onClick={() => {
-                  toast.dismiss(t.id);
-                  navigate(`/rooms/${payload.roomName}`, {
-                    state: { token: payload.token, roomName: payload.roomName },
-                  });
-                }}
-              >
-                Pick Up
-              </Button>
-              <Button
-                variant='contained'
-                color='error'
-                onClick={() => {
-                  toast.dismiss(t.id);
-                }}
-              >
-                Dismiss
-              </Button>
-            </Stack>
-          </Stack>
-        </Slide>
-      ),
-      {
-        duration: Infinity,
-      },
-    );
-  };
-
-  useEffect(() => {
-    socket.on('calling', listenCall);
-
-    return () => {
-      socket.off('calling', listenCall);
-    };
-  }, []);
-
   return (
     <div>
+      <CallNotification />
       <Header />
       <main>
         <Outlet />
