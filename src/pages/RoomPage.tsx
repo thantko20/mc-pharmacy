@@ -69,6 +69,7 @@ const useRoom = ({
       const room = await Twilio.connect(token, {
         name: roomName,
         video: await isWebcamAvailable(),
+        audio: true,
       });
       setRoom(room);
       if (room.participants.size === 0) {
