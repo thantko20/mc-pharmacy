@@ -11,7 +11,7 @@ import Twilio, {
   LocalParticipant,
 } from 'twilio-video';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Box, Button, IconButton, Stack } from '@mui/material';
+import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
 import { SectionContainer } from '@/components/SectionContainer';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { socket } from '@/lib/socket-io';
@@ -243,14 +243,18 @@ const Participant = ({ participant, name }: ParticipantProps) => {
 
   return (
     <div className='participant'>
-      <h3>{name}</h3>
+      <Typography variant='subtitle1'>{name}</Typography>
 
       <Box
         component='video'
         ref={videoRef}
         width='100%'
-        maxWidth='400px'
-        height='200px'
+        maxWidth='700px'
+        height='300px'
+        sx={{
+          objectFit: 'cover',
+          borderRadius: '1rem',
+        }}
       ></Box>
       <audio ref={audioRef} autoPlay={true} muted={false} />
     </div>

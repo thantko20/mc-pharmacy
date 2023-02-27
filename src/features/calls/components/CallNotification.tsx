@@ -10,7 +10,12 @@ import {
   IconButton,
   Avatar,
 } from '@mui/material';
-import { CancelRounded, CheckCircleRounded } from '@mui/icons-material';
+import {
+  Call,
+  CallEnd,
+  CancelRounded,
+  CheckCircleRounded,
+} from '@mui/icons-material';
 import { TUser } from '@/features/auth/types';
 import { socket } from '@/lib/socket-io';
 
@@ -53,24 +58,28 @@ const IncomingCallToast = ({
           </Typography>
         </Stack>
         <Stack direction='row' spacing={2}>
-          <IconButton
-            color='success'
-            onClick={() => {
-              toast.dismiss(t.id);
-              onPick();
-            }}
-          >
-            <CheckCircleRounded />
-          </IconButton>
-          <IconButton
+          <Button
             color='error'
             onClick={() => {
               toast.dismiss(t.id);
               onDismiss();
             }}
+            aria-label='decline call'
+            variant='contained'
           >
-            <CancelRounded />
-          </IconButton>
+            <CallEnd />
+          </Button>
+          <Button
+            color='success'
+            onClick={() => {
+              toast.dismiss(t.id);
+              onPick();
+            }}
+            aria-label='pick up call'
+            variant='contained'
+          >
+            <Call />
+          </Button>
         </Stack>
       </Stack>
     </Slide>
