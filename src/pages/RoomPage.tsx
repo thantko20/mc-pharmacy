@@ -11,7 +11,15 @@ import Twilio, {
   LocalParticipant,
 } from 'twilio-video';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  IconButton,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { grey } from '@mui/material/colors';
 import { SectionContainer } from '@/components/SectionContainer';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { socket } from '@/lib/socket-io';
@@ -39,15 +47,28 @@ const useRoom = ({
   calleeId?: string;
 }) => {
   const [room, setRoom] = useState<Room | null>(null);
-  const [isRoomConnecting, setIsRoomConnecting] = useState(true);
+  const [isConnectingToRoom, setIsConnectingToRoom] = useState(true);
   const { user } = useAuth();
 
   const navigate = useNavigate();
+
+  const isWebcamAvailable = async () => {
+    try {
+      await navigator.mediaDevices.getUserMedia({
+        video: true,
+      });
+
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
 
   const connectRoom = useCallback(async () => {
     try {
       const room = await Twilio.connect(token, {
         name: roomName,
+        video: await isWebcamAvailable(),
       });
       setRoom(room);
       if (room.participants.size === 0) {
@@ -60,7 +81,7 @@ const useRoom = ({
     } catch (error) {
       console.log(error);
     } finally {
-      setIsRoomConnecting(false);
+      setIsConnectingToRoom(false);
     }
   }, [roomName, token]);
 
@@ -93,7 +114,7 @@ const useRoom = ({
   return {
     room,
     hangUp,
-    isRoomConnecting,
+    isConnectingToRoom,
   };
 };
 
@@ -252,8 +273,10 @@ const Participant = ({ participant, name }: ParticipantProps) => {
         maxWidth='700px'
         height='300px'
         sx={{
-          objectFit: 'cover',
-          borderRadius: '1rem',
+          objectFit: 'contain',
+          borderRadius: '0.75rem',
+          overflow: 'hidden',
+          backgroundColor: grey[100],
         }}
       ></Box>
       <audio ref={audioRef} autoPlay={true} muted={false} />
@@ -276,7 +299,7 @@ const RoomPage = () => {
     return <div>Invalid Blah blah</div>;
   }
 
-  const { room, hangUp } = useRoom({
+  const { room, hangUp, isConnectingToRoom } = useRoom({
     roomName: roomName as string,
     token,
     calleeId: otherParticipant._id,
@@ -294,7 +317,12 @@ const RoomPage = () => {
     <SectionContainer>
       <div>
         <div>
-          {room ? (
+          {isConnectingToRoom ? (
+            <Stack display='flex' alignItems='center' justifyContent='center'>
+              <CircularProgress />
+              <Typography variant='h5'>Connecting...</Typography>
+            </Stack>
+          ) : room ? (
             <Stack
               direction='column'
               spacing={2}
@@ -315,7 +343,14 @@ const RoomPage = () => {
                   />
                 ) : null}
               </Stack>
-              <Stack direction='row' alignItems='center' spacing={2}>
+              <Stack
+                direction='row'
+                alignItems='center'
+                spacing={4}
+                bgcolor={grey[200]}
+                p={2}
+                borderRadius='9999px'
+              >
                 <IconButton
                   onClick={toggleVideo}
                   aria-label='toggle camera'
