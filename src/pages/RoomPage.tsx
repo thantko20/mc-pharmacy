@@ -312,23 +312,26 @@ const RoomPage = () => {
                 ) : null}
               </Stack>
               <Stack direction='row' alignItems='center' spacing={2}>
-                <Button
+                <IconButton
                   onClick={toggleVideo}
-                  color='secondary'
-                  variant='contained'
                   aria-label='toggle camera'
+                  color={isVideoOff ? 'default' : 'primary'}
                 >
                   {isVideoOff ? <VideocamOff /> : <Videocam />}
-                </Button>
-                <Button
+                </IconButton>
+                <IconButton
                   onClick={toggleAudio}
-                  color='secondary'
-                  variant='contained'
                   aria-label='toggle microphone'
+                  color={isMuted ? 'default' : 'primary'}
                 >
                   {isMuted ? <MicOff /> : <Mic />}
-                </Button>
-                <Button variant='contained' color='error' onClick={hangUp}>
+                </IconButton>
+                <Button
+                  variant='contained'
+                  color='error'
+                  onClick={hangUp}
+                  aria-label='hang up'
+                >
                   <CallEnd />
                 </Button>
               </Stack>
