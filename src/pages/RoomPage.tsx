@@ -1,6 +1,6 @@
 import Twilio, {
   type Room,
-  Participant as TParticipant,
+  Participant as TwilioParticipant,
   VideoTrackPublication,
   AudioTrackPublication,
   LocalVideoTrack,
@@ -20,8 +20,13 @@ import { TUser } from '@/features/auth/types';
 type TVideoTracks = (LocalVideoTrack | RemoteVideoTrack | null)[];
 
 type TAudioTracks = (LocalAudioTrack | RemoteAudioTrack | null)[];
-
-const Participant = ({ participant }: { participant: TParticipant }) => {
+const Participant = ({
+  participant,
+  name,
+}: {
+  participant: TwilioParticipant;
+  name: string;
+}) => {
   const [videoTracks, setVideoTracks] = useState<TVideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<TAudioTracks>([]);
 
@@ -90,7 +95,7 @@ const Participant = ({ participant }: { participant: TParticipant }) => {
 
   return (
     <div className='participant'>
-      <h3>{participant.identity}</h3>
+      <h3>{name}</h3>
 
       <Box
         component='video'
@@ -106,7 +111,7 @@ const Participant = ({ participant }: { participant: TParticipant }) => {
 
 const RoomPage = () => {
   const [room, setRoom] = useState<Room | null>(null);
-  const [participants, setParticipants] = useState<TParticipant[]>([]);
+  const [participants, setParticipants] = useState<TwilioParticipant[]>([]);
 
   const { user } = useAuth();
 
@@ -118,13 +123,13 @@ const RoomPage = () => {
     navigate(-1);
   }
 
-  const { token, callee, isCaller } = location.state as {
+  const { token, otherParticipant, isMeCaller } = location.state as {
     token: string;
-    callee?: TUser;
-    isCaller?: boolean;
+    otherParticipant: TUser;
+    isMeCaller?: boolean;
   };
 
-  if (isCaller && !callee?._id) {
+  if (isMeCaller && !otherParticipant?._id) {
     return <div>Need callee id</div>;
   }
 
@@ -148,11 +153,11 @@ const RoomPage = () => {
   };
 
   useEffect(() => {
-    const participantConnected = (participant: TParticipant) => {
+    const participantConnected = (participant: TwilioParticipant) => {
       setParticipants((prevParticipants) => [...prevParticipants, participant]);
     };
 
-    const participantDisconnected = (participant: TParticipant) => {
+    const participantDisconnected = (participant: TwilioParticipant) => {
       setParticipants((prevParticipants) =>
         prevParticipants.filter((p) => p !== participant),
       );
@@ -165,10 +170,10 @@ const RoomPage = () => {
         });
 
         setRoom(room);
-        if (isCaller) {
+        if (isMeCaller) {
           socket.emit('start-call', {
             callerId: user?._id,
-            calleeId: callee!._id,
+            calleeId: otherParticipant!._id,
             roomName: room.name,
           });
         }
@@ -209,11 +214,13 @@ const RoomPage = () => {
                 <Participant
                   key={room.localParticipant.sid}
                   participant={room.localParticipant}
+                  name={user!.name}
                 />
                 {participants[0] ? (
                   <Participant
                     key={participants[0].sid}
                     participant={participants[0]}
+                    name={otherParticipant.name}
                   />
                 ) : null}
               </Stack>

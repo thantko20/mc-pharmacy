@@ -1,9 +1,18 @@
-import { TUser } from '@/features/auth/types';
-import { socket } from '@/lib/socket-io';
-import { Slide, Stack, Paper, Typography, Button } from '@mui/material';
-import { ReactNode, createContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import toast, { Toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import {
+  Slide,
+  Stack,
+  Paper,
+  Typography,
+  Button,
+  IconButton,
+  Avatar,
+} from '@mui/material';
+import { CancelRounded, CheckCircleRounded } from '@mui/icons-material';
+import { TUser } from '@/features/auth/types';
+import { socket } from '@/lib/socket-io';
 
 type TListenCallPayload = {
   roomName: string;
@@ -34,37 +43,39 @@ const IncomingCallToast = ({
         padding={2}
         elevation={4}
       >
-        <Typography variant='h6'>{payload.caller.name}</Typography>
+        <Stack direction='row' spacing={1} alignItems='center'>
+          <Avatar
+            alt={payload.caller.name}
+            src={payload.caller.pictureUrls[0]}
+          />
+          <Typography fontSize={18} fontWeight='600'>
+            {payload.caller.name}
+          </Typography>
+        </Stack>
         <Stack direction='row' spacing={2}>
-          <Button
-            variant='contained'
+          <IconButton
             color='success'
             onClick={() => {
               toast.dismiss(t.id);
               onPick();
             }}
           >
-            Pick Up
-          </Button>
-          <Button
-            variant='contained'
+            <CheckCircleRounded />
+          </IconButton>
+          <IconButton
             color='error'
             onClick={() => {
               toast.dismiss(t.id);
               onDismiss();
             }}
           >
-            Dismiss
-          </Button>
+            <CancelRounded />
+          </IconButton>
         </Stack>
       </Stack>
     </Slide>
   );
 };
-
-type TCallNotiContext = {};
-
-// const CallNotiContext = createContext();
 
 export const CallNotification = () => {
   const navigate = useNavigate();
@@ -77,7 +88,11 @@ export const CallNotification = () => {
           payload={payload}
           onPick={() =>
             navigate(`/rooms/${payload.roomName}`, {
-              state: { token: payload.token, roomName: payload.roomName },
+              state: {
+                token: payload.token,
+                roomName: payload.roomName,
+                otherParticipant: payload.caller,
+              },
             })
           }
           onDismiss={() => {}}
