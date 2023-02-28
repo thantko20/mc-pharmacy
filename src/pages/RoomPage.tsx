@@ -32,6 +32,7 @@ import {
   Videocam,
   VideocamOff,
 } from '@mui/icons-material';
+import { toast } from 'react-hot-toast';
 
 type TVideoTracks = (LocalVideoTrack | RemoteVideoTrack | null)[];
 
@@ -52,6 +53,18 @@ const useRoom = ({
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const callDeclinedListner = () => {
+      toast.error('Call Rejected.');
+      hangUp();
+    };
+    socket.on('call_declined', callDeclinedListner);
+
+    return () => {
+      socket.off('call_declined', callDeclinedListner);
+    };
+  }, []);
+
   const isWebcamAvailable = async () => {
     try {
       await navigator.mediaDevices.getUserMedia({
@@ -64,18 +77,31 @@ const useRoom = ({
     }
   };
 
+  const isMicAvailable = async () => {
+    try {
+      await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
   const connectRoom = useCallback(async () => {
     try {
+      const hasCam = await isWebcamAvailable();
+      const hasMic = await isMicAvailable();
       const room = await Twilio.connect(token, {
         name: roomName,
-        video: await isWebcamAvailable(),
-        audio: true,
+        video: hasCam,
+        audio: hasMic,
       });
       setRoom(room);
       if (room.participants.size === 0) {
         socket.emit('start-call', {
-          callerId: user?._id,
-          calleeId: calleeId,
+          callerId: user?._id as string,
+          calleeId: calleeId as string,
           roomName: room.name,
         });
       }
