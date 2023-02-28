@@ -38,14 +38,28 @@ type TVideoTracks = (LocalVideoTrack | RemoteVideoTrack | null)[];
 
 type TAudioTracks = (LocalAudioTrack | RemoteAudioTrack | null)[];
 
+export type TCallEndedPayload = {
+  roomSid: string;
+  roomName: string;
+};
+
+export type TEndCallPayload = {
+  callerId: string;
+  calleeId: string;
+  roomSid: string;
+  roomName: string;
+};
+
 const useRoom = ({
   roomName,
   token,
   calleeId,
+  callerId,
 }: {
   roomName: string;
   token: string;
-  calleeId?: string;
+  calleeId: string;
+  callerId: string;
 }) => {
   const [room, setRoom] = useState<Room | null>(null);
   const [isConnectingToRoom, setIsConnectingToRoom] = useState(true);
@@ -53,15 +67,27 @@ const useRoom = ({
 
   const navigate = useNavigate();
 
+  const endCall = () => {
+    if (room) {
+      socket.emit('callEnded', {
+        callerId,
+        calleeId,
+        roomName: room.name,
+        roomSid: room.sid,
+      });
+    }
+    hangUp();
+  };
+
   useEffect(() => {
-    const callDeclinedListner = () => {
-      toast.error('Call Rejected.');
+    const callEndedListener = ({ roomSid }: TCallEndedPayload) => {
       hangUp();
     };
-    socket.on('call_declined', callDeclinedListner);
+
+    socket.on('callEnded', callEndedListener);
 
     return () => {
-      socket.off('call_declined', callDeclinedListner);
+      socket.off('callEnded', callEndedListener);
     };
   }, []);
 
@@ -99,9 +125,10 @@ const useRoom = ({
       });
       setRoom(room);
       if (room.participants.size === 0) {
-        socket.emit('start-call', {
-          callerId: user?._id as string,
-          calleeId: calleeId as string,
+        console.log('Hey');
+        socket.emit('startCall', {
+          callerId: callerId,
+          calleeId: calleeId,
           roomName: room.name,
         });
       }
@@ -114,7 +141,7 @@ const useRoom = ({
 
   const disconnectRoom = () => {
     setRoom((currentRoom) => {
-      if (currentRoom && currentRoom.localParticipant.state === 'connected') {
+      if (currentRoom) {
         currentRoom.localParticipant.tracks.forEach((track) =>
           track.unpublish(),
         );
@@ -132,7 +159,6 @@ const useRoom = ({
 
   useEffect(() => {
     connectRoom();
-
     return () => {
       disconnectRoom();
     };
@@ -142,6 +168,7 @@ const useRoom = ({
     room,
     hangUp,
     isConnectingToRoom,
+    endCall,
   };
 };
 
@@ -326,10 +353,14 @@ const RoomPage = () => {
     return <div>Invalid Blah blah</div>;
   }
 
-  const { room, hangUp, isConnectingToRoom } = useRoom({
+  const calleeId = isMeCaller ? otherParticipant._id : user!._id;
+  const callerId = isMeCaller ? user!._id : otherParticipant._id;
+
+  const { room, hangUp, isConnectingToRoom, endCall } = useRoom({
     roomName: roomName as string,
     token,
-    calleeId: otherParticipant._id,
+    calleeId,
+    callerId,
   });
   const { participants } = useParticipants({ room });
 
@@ -395,7 +426,7 @@ const RoomPage = () => {
                 <Button
                   variant='contained'
                   color='error'
-                  onClick={hangUp}
+                  onClick={endCall}
                   aria-label='hang up'
                 >
                   <CallEnd />

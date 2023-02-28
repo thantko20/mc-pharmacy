@@ -1,25 +1,12 @@
 import { useEffect } from 'react';
 import toast, { Toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import {
-  Slide,
-  Stack,
-  Paper,
-  Typography,
-  Button,
-  IconButton,
-  Avatar,
-} from '@mui/material';
-import {
-  Call,
-  CallEnd,
-  CancelRounded,
-  CheckCircleRounded,
-} from '@mui/icons-material';
+import { Slide, Stack, Paper, Typography, Button, Avatar } from '@mui/material';
+import { Call, CallEnd } from '@mui/icons-material';
 import { TUser } from '@/features/auth/types';
 import { socket } from '@/lib/socket-io';
 
-type TListenCallPayload = {
+export type TListenCallPayload = {
   roomName: string;
   token: string;
   caller: TUser;
@@ -101,6 +88,7 @@ export const CallNotification = () => {
                 token: payload.token,
                 roomName: payload.roomName,
                 otherParticipant: payload.caller,
+                isMeCaller: false,
               },
             })
           }
