@@ -23,6 +23,8 @@ const AuthRoute = ({ children }: { children: ReactNode }) => {
           display='flex'
           justifyContent='center'
           alignItems='center'
+          bgcolor='white'
+          zIndex={10}
         >
           <CircularProgress />
         </Box>
@@ -54,7 +56,11 @@ export const router = createBrowserRouter([
       },
       {
         path: '/test',
-        element: <TestPage />,
+        element: (
+          <AuthRoute>
+            <TestPage />
+          </AuthRoute>
+        ),
       },
       {
         path: '/rooms/:roomName',

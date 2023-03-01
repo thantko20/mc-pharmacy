@@ -62,6 +62,7 @@ export const LoginForm = () => {
             {...register('email')}
             label='Email'
             helperText={errors.email?.message}
+            type='email'
           />
           <TextField
             error={!!errors.password?.message}
@@ -69,6 +70,7 @@ export const LoginForm = () => {
             {...register('password')}
             label='Password'
             helperText={errors.password?.message}
+            type='password'
           />
           <LoadingButton
             type='submit'
