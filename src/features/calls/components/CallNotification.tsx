@@ -3,14 +3,9 @@ import toast, { Toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { Slide, Stack, Paper, Typography, Button, Avatar } from '@mui/material';
 import { Call, CallEnd } from '@mui/icons-material';
-import { TUser } from '@/features/auth/types';
 import { socket } from '@/lib/socket-io';
-
-export type TListenCallPayload = {
-  roomName: string;
-  token: string;
-  caller: TUser;
-};
+import { useAuth } from '@/features/auth/components/AuthProvider';
+import { TListenCallPayload } from '../types';
 
 type IncomingCallToastProps = {
   t: Toast;
@@ -75,6 +70,7 @@ const IncomingCallToast = ({
 
 export const CallNotification = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const listenCall = (payload: TListenCallPayload) => {
     toast.custom(
@@ -82,7 +78,13 @@ export const CallNotification = () => {
         <IncomingCallToast
           t={t}
           payload={payload}
-          onPick={() =>
+          onPick={() => {
+            socket.emit('acceptCall', {
+              calleeId: user?._id as string,
+              callerId: payload.caller._id,
+              roomName: payload.roomName,
+              roomSid: payload.roomSid,
+            });
             navigate(`/rooms/${payload.roomName}`, {
               state: {
                 token: payload.token,
@@ -90,9 +92,16 @@ export const CallNotification = () => {
                 otherParticipant: payload.caller,
                 isMeCaller: false,
               },
-            })
-          }
-          onDismiss={() => {}}
+            });
+          }}
+          onDismiss={() => {
+            socket.emit('declineCall', {
+              calleeId: user?._id as string,
+              callerId: payload.caller._id,
+              roomName: payload.roomName,
+              roomSid: payload.roomSid,
+            });
+          }}
         />
       ),
       {

@@ -1,9 +1,12 @@
+import { SectionContainer } from '@/components/SectionContainer';
 import { TUser } from '@/features/auth/types';
 import { getTokenAndRoomName } from '@/features/calls/api/getTokenAndRoomName';
 import { axios } from '@/lib/axios';
 import { TSuccessResponse } from '@/types';
+import { PhoneInTalk } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { Button, Stack, Typography } from '@mui/material';
+import { Container, Stack, Typography } from '@mui/material';
+import { grey } from '@mui/material/colors';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,14 +34,23 @@ const UserListItem = ({ user }: { user: TUser }) => {
   };
 
   return (
-    <Stack direction='row' spacing={4}>
-      <Typography>{user.name}</Typography>
+    <Stack
+      direction='row'
+      spacing={4}
+      justifyContent='space-between'
+      bgcolor={grey[200]}
+      p={1}
+      borderRadius='0.25rem'
+      alignItems='center'
+    >
+      <Typography fontWeight={600}>{user.name}</Typography>
       <LoadingButton
         loading={isCalling}
         onClick={() => call(user)}
-        variant='outlined'
+        variant='contained'
+        aria-label='call'
       >
-        Call
+        <PhoneInTalk />
       </LoadingButton>
     </Stack>
   );
@@ -58,10 +70,14 @@ export default function TestPage() {
   }, []);
 
   return (
-    <div>
-      {users.map((user) => (
-        <UserListItem key={user.id} user={user} />
-      ))}
-    </div>
+    <SectionContainer>
+      <Container maxWidth='sm'>
+        <Stack direction='column' spacing={2}>
+          {users.map((user) => (
+            <UserListItem key={user.id} user={user} />
+          ))}
+        </Stack>
+      </Container>
+    </SectionContainer>
   );
 }

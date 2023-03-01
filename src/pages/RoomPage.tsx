@@ -27,12 +27,14 @@ import { useAuth } from '@/features/auth/components/AuthProvider';
 import { TUser } from '@/features/auth/types';
 import {
   CallEnd,
+  Info,
   Mic,
   MicOff,
   Videocam,
   VideocamOff,
 } from '@mui/icons-material';
 import { toast } from 'react-hot-toast';
+import { TCallDeclinePayload } from '@/features/calls/types';
 
 type TVideoTracks = (LocalVideoTrack | RemoteVideoTrack | null)[];
 
@@ -63,7 +65,6 @@ const useRoom = ({
 }) => {
   const [room, setRoom] = useState<Room | null>(null);
   const [isConnectingToRoom, setIsConnectingToRoom] = useState(true);
-  const { user } = useAuth();
 
   const navigate = useNavigate();
 
@@ -81,13 +82,24 @@ const useRoom = ({
 
   useEffect(() => {
     const callEndedListener = ({ roomSid }: TCallEndedPayload) => {
+      toast(`Other participant hanged up the call.`, {
+        icon: <Info />,
+      });
+      hangUp();
+    };
+
+    const declineCallListener = (payload: TCallDeclinePayload) => {
+      toast.error(`Other participant declined the call.`);
       hangUp();
     };
 
     socket.on('callEnded', callEndedListener);
 
+    socket.on('declineCall', declineCallListener);
+
     return () => {
       socket.off('callEnded', callEndedListener);
+      socket.off('declineCall', declineCallListener);
     };
   }, []);
 
@@ -123,13 +135,15 @@ const useRoom = ({
         video: hasCam,
         audio: hasMic,
       });
+
       setRoom(room);
+
       if (room.participants.size === 0) {
-        console.log('Hey');
         socket.emit('startCall', {
           callerId: callerId,
           calleeId: calleeId,
           roomName: room.name,
+          roomSid: room.sid,
         });
       }
     } catch (error) {
