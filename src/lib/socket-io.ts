@@ -1,8 +1,9 @@
 import {
   TCallDeclinePayload,
+  TCallEndedPayload,
+  TEndCallPayload,
   TListenCallPayload,
 } from '@/features/calls/types';
-import { TCallEndedPayload, TEndCallPayload } from '@/pages/RoomPage';
 import { MyStorage } from '@/utils/MyStorage';
 import { Socket, io } from 'socket.io-client';
 
