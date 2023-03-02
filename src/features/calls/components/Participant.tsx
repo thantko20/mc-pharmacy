@@ -98,6 +98,7 @@ export const Participant = ({ participant, name }: ParticipantProps) => {
           borderRadius: '0.75rem',
           overflow: 'hidden',
           backgroundColor: grey[100],
+          transform: 'rotateY(180deg)',
         }}
       ></Box>
       <audio ref={audioRef} autoPlay={true} muted={false} />
