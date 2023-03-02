@@ -1,4 +1,14 @@
+import {
+  LocalVideoTrack,
+  RemoteVideoTrack,
+  LocalAudioTrack,
+  RemoteAudioTrack,
+} from 'twilio-video';
 import { TUser } from '../auth/types';
+
+export type TVideoTracks = (LocalVideoTrack | RemoteVideoTrack | null)[];
+
+export type TAudioTracks = (LocalAudioTrack | RemoteAudioTrack | null)[];
 
 export type TCallDeclinePayload = {
   callerId: string;
@@ -12,4 +22,16 @@ export type TListenCallPayload = {
   token: string;
   caller: TUser;
   roomSid: string;
+};
+
+export type TCallEndedPayload = {
+  roomSid: string;
+  roomName: string;
+};
+
+export type TEndCallPayload = {
+  callerId: string;
+  calleeId: string;
+  roomSid: string;
+  roomName: string;
 };
