@@ -7,6 +7,7 @@ import RoomPage from './pages/RoomPage';
 import { useAuth } from './features/auth/components/AuthProvider';
 import { ReactNode } from 'react';
 import { Box, CircularProgress } from '@mui/material';
+import MedicineDetailPage from './pages/MedicineDetailPage';
 
 const AuthRoute = ({ children }: { children: ReactNode }) => {
   const { user, isCheckingAuth } = useAuth();
@@ -69,6 +70,10 @@ export const router = createBrowserRouter([
             <RoomPage />
           </AuthRoute>
         ),
+      },
+      {
+        path: '/medicines/:medicineId',
+        element: <MedicineDetailPage />,
       },
     ],
   },

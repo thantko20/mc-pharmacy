@@ -34,17 +34,6 @@ export const MedicineCard = ({ medicine }: { medicine: TMedicine }) => {
           >
             {medicine.name}
           </Typography>
-          <Typography
-            variant='body2'
-            color='text.secondary'
-            sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              height: '3em',
-            }}
-          >
-            {medicine.details}
-          </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions>

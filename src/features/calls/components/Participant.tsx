@@ -9,6 +9,32 @@ import {
 } from 'twilio-video';
 import { TVideoTracks, TAudioTracks } from '../types';
 
+const publicationToTracks = (
+  trackMap: Map<string, VideoTrackPublication | AudioTrackPublication>,
+) => {
+  return Array.from(trackMap.values())
+    .map((publication) => publication.track)
+    .filter((track) => track !== null);
+};
+
+const useVideoTracks = (participant?: TwilioParticipant) => {
+  const [videoTracks, setVideoTracks] = useState<TVideoTracks>([]);
+
+  const videoRef = useRef<any>();
+
+  useEffect(() => {
+    if (participant) {
+      setVideoTracks(
+        publicationToTracks(participant.videoTracks) as TVideoTracks,
+      );
+    }
+
+    return () => {
+      setVideoTracks([]);
+    };
+  }, [participant]);
+};
+
 type ParticipantProps = {
   participant: TwilioParticipant;
   name: string;
