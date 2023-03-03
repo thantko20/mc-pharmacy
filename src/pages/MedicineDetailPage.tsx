@@ -1,5 +1,6 @@
 import { SectionContainer } from '@/components/SectionContainer';
 import { useGetMedicineDetail } from '@/features/medicines/api/getMedicineDetail';
+import { useCart } from '@/features/medicines/components/CartProvider';
 import { AspectRatio } from '@mui/joy';
 import { Box, Button, Paper, Stack, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
@@ -12,6 +13,7 @@ export default function MedicineDetailPage() {
   }
 
   const { data } = useGetMedicineDetail({ id: medicineId });
+  const { addToCart } = useCart();
 
   return (
     <SectionContainer>
@@ -33,10 +35,17 @@ export default function MedicineDetailPage() {
               {data?.payload.name}
             </Typography>
             <Typography variant='body1'>{data?.payload.details}</Typography>
-            <Typography fontWeight={600}>
-              {data?.payload.price.toLocaleString()}
-            </Typography>
-            <Button variant='contained'>Add To Cart</Button>
+            <Stack mt={4} direction='row' alignItems='center' spacing={2}>
+              <Typography fontWeight={600}>
+                {data?.payload.price.toLocaleString()} MMK
+              </Typography>
+              <Button
+                variant='contained'
+                onClick={() => addToCart({ ...data.payload, quantity: 1 })}
+              >
+                Add To Cart
+              </Button>
+            </Stack>
           </Box>
         </Stack>
       ) : null}

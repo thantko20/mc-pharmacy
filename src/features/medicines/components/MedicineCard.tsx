@@ -11,9 +11,12 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { TMedicine } from '@/features/medicines/types';
+import { useCart } from './CartProvider';
 
 export const MedicineCard = ({ medicine }: { medicine: TMedicine }) => {
   const navigate = useNavigate();
+  const { addToCart } = useCart();
+
   return (
     <Card elevation={4}>
       <CardActionArea onClick={() => navigate(`/medicines/${medicine._id}`)}>
@@ -46,6 +49,7 @@ export const MedicineCard = ({ medicine }: { medicine: TMedicine }) => {
           sx={{
             ml: '1rem',
           }}
+          onClick={() => addToCart({ ...medicine, quantity: 1 })}
         >
           Add To Cart
         </Button>
