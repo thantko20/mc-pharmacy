@@ -2,41 +2,47 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Container, Stack, TextField, Typography } from '@mui/material';
-import { useLogin } from '../api/login';
+import { useRegister } from '../api/register';
 import { useAuth } from './AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import { LoadingButton } from '@mui/lab';
+import { toast } from 'react-hot-toast';
 
-const loginSchema = z.object({
+const registerSchema = z.object({
   email: z
     .string({ required_error: 'Email is required.' })
     .email('Please provide a valid email.'),
   password: z
     .string({ required_error: 'Password is required.' })
     .min(8, 'Password must have at least 8 characters.'),
+  name: z
+    .string({ required_error: 'Name is required.' })
+    .min(3, 'Name must have at least 3 characters')
+    .max(25, 'Name can only have 25 characters at most.'),
 });
 
-type TLoginFormData = z.infer<typeof loginSchema>;
+type TRegisterFormData = z.infer<typeof registerSchema>;
 
-export const LoginForm = () => {
+export const RegistrationForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TLoginFormData>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<TRegisterFormData>({
+    resolver: zodResolver(registerSchema),
   });
 
-  const loginMutation = useLogin();
+  const registerMutation = useRegister();
 
   const { loginFn } = useAuth();
 
   const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<TLoginFormData> = (data) => {
-    loginMutation.mutate(data, {
+  const onSubmit: SubmitHandler<TRegisterFormData> = (data) => {
+    registerMutation.mutate(data, {
       onSuccess: (data) => {
         loginFn(data.payload);
+        toast.success('Successfully registered.');
         navigate('/');
       },
     });
@@ -46,9 +52,17 @@ export const LoginForm = () => {
     <Container maxWidth='sm'>
       <Stack direction='column'>
         <Typography variant='h4' gutterBottom>
-          Login
+          Register
         </Typography>
         <Stack component='form' onSubmit={handleSubmit(onSubmit)} spacing={4}>
+          <TextField
+            error={!!errors.name?.message}
+            id='name'
+            {...register('name')}
+            label='Name'
+            helperText={errors.name?.message}
+            type='text'
+          />
           <TextField
             error={!!errors.email?.message}
             id='email'
@@ -72,9 +86,9 @@ export const LoginForm = () => {
             }}
             variant='contained'
             size='large'
-            loading={loginMutation.isLoading}
+            loading={registerMutation.isLoading}
           >
-            Login
+            Register
           </LoadingButton>
         </Stack>
       </Stack>

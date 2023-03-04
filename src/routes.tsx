@@ -6,11 +6,11 @@ import TestPage from './pages/TestPage';
 import RoomPage from './pages/RoomPage';
 import { useAuth } from './features/auth/components/AuthProvider';
 import { ReactNode } from 'react';
-import { Box, CircularProgress } from '@mui/material';
 import MedicineDetailPage from './pages/MedicineDetailPage';
+import RegistrationPage from './pages/RegistrationPage';
 
 const AuthRoute = ({ children }: { children: ReactNode }) => {
-  const { user, isCheckingAuth } = useAuth();
+  const { user } = useAuth();
 
   return (
     <>{user ? children : <div>You have to login to access this page</div>}</>
@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '/auth/register',
-        element: <div>Register Page</div>,
+        element: <RegistrationPage />,
       },
       {
         path: '/test',
