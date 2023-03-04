@@ -38,7 +38,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         const tempIdx = tempItems.findIndex((value) => value._id === item._id);
 
         if (tempIdx >= 0) {
-          tempItems[tempIdx].quantity += item.quantity;
+          const isOverStocks =
+            item.stocks < tempItems[tempIdx].quantity + item.quantity;
+          tempItems[tempIdx].quantity += isOverStocks ? 0 : item.quantity;
 
           return tempItems;
         }
@@ -58,7 +60,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setItems((prevItems) => {
       const tempItems = [...prevItems];
       const idx = tempItems.findIndex(
-        (value) => value._id === id && value.stock > value.quantity + 1,
+        (value) => value._id === id && value.stocks > value.quantity + 1,
       );
 
       if (idx >= 0) {

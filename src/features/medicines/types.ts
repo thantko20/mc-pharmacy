@@ -6,7 +6,7 @@ export type TMedicine = {
   details: string;
   expiredDate: string;
   price: number;
-  stock: number;
+  stocks: number;
   categoryId: string;
   pictureUrls: string[];
   picPublicIds: string[];

@@ -32,23 +32,27 @@ export const Cart = () => {
           padding: '0.75rem',
         }}
       >
-        <Box sx={{ width: 300 }}>
-          <List>
-            {items.map((item) => (
-              <ListItem key={item._id}>
-                <Stack
-                  direction='row'
-                  alignItems='center'
-                  justifyContent='space-between'
-                  spacing={2}
-                  width={1}
-                >
-                  <Typography>{item.name}</Typography>
-                  <Typography>{item.quantity}</Typography>
-                </Stack>
-              </ListItem>
-            ))}
-          </List>
+        <Box sx={{ width: '100vw', maxWidth: 400 }}>
+          {items.length > 0 ? (
+            <List>
+              {items.map((item) => (
+                <ListItem key={item._id}>
+                  <Stack
+                    direction='row'
+                    alignItems='center'
+                    justifyContent='space-between'
+                    spacing={2}
+                    width={1}
+                  >
+                    <Typography>{item.name}</Typography>
+                    <Typography>{item.quantity}</Typography>
+                  </Stack>
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <Typography>Empty Cart</Typography>
+          )}
         </Box>
       </Drawer>
     </>

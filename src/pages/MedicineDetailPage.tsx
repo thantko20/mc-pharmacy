@@ -1,7 +1,17 @@
 import { SectionContainer } from '@/components/SectionContainer';
 import { useGetMedicineDetail } from '@/features/medicines/api/getMedicineDetail';
 import { useCart } from '@/features/orders/components/CartProvider';
-import { Box, Button, Paper, Skeleton, Stack, Typography } from '@mui/material';
+import { useAddToCartQuantity } from '@/hooks/useAddToCartQuantity';
+import { Add, Remove } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  IconButton,
+  Paper,
+  Skeleton,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { useParams } from 'react-router-dom';
 
 export default function MedicineDetailPage() {
@@ -13,6 +23,9 @@ export default function MedicineDetailPage() {
 
   const { data, isLoading } = useGetMedicineDetail({ id: medicineId });
   const { addToCart } = useCart();
+  const { quantity, increaseQuantity, decreaseQuantity } = useAddToCartQuantity(
+    { upperBound: data?.payload.stocks },
+  );
 
   return (
     <SectionContainer>
@@ -50,17 +63,24 @@ export default function MedicineDetailPage() {
             />
           </Paper>
           <Box>
-            <Typography variant='h4' gutterBottom>
-              {data?.payload.name}
+            <Typography variant='h3'>{data?.payload.name}</Typography>
+            <Typography fontSize='1.75rem' gutterBottom>
+              {data?.payload.price.toLocaleString()} MMK
             </Typography>
             <Typography variant='body1'>{data?.payload.details}</Typography>
-            <Stack mt={4} direction='row' alignItems='center' spacing={2}>
-              <Typography fontWeight={600}>
-                {data?.payload.price.toLocaleString()} MMK
-              </Typography>
+            <Stack mt={4} spacing={2} alignItems='flex-start'>
+              <Stack direction='row' spacing={2} alignItems='center'>
+                <IconButton onClick={decreaseQuantity}>
+                  <Remove />
+                </IconButton>
+                <Typography>{quantity}</Typography>
+                <IconButton onClick={increaseQuantity}>
+                  <Add />
+                </IconButton>
+              </Stack>
               <Button
                 variant='contained'
-                onClick={() => addToCart({ ...data.payload, quantity: 1 })}
+                onClick={() => addToCart({ ...data.payload, quantity })}
               >
                 Add To Cart
               </Button>
