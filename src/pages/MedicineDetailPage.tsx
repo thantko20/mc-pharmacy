@@ -1,7 +1,7 @@
 import { SectionContainer } from '@/components/SectionContainer';
 import { useGetMedicineDetail } from '@/features/medicines/api/getMedicineDetail';
 import { useCart } from '@/features/orders/components/CartProvider';
-import { Box, Button, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Paper, Skeleton, Stack, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
 export default function MedicineDetailPage() {
@@ -11,12 +11,32 @@ export default function MedicineDetailPage() {
     return <p>Need medicine id</p>;
   }
 
-  const { data } = useGetMedicineDetail({ id: medicineId });
+  const { data, isLoading } = useGetMedicineDetail({ id: medicineId });
   const { addToCart } = useCart();
 
   return (
     <SectionContainer>
-      {data ? (
+      {isLoading ? (
+        <>
+          <Skeleton width='100%' height={400} variant='rectangular' />
+          <Skeleton
+            width='80%'
+            height={20}
+            variant='rectangular'
+            sx={{
+              marginTop: '1em',
+            }}
+          />
+          <Skeleton
+            width='100%'
+            height={20}
+            variant='rectangular'
+            sx={{
+              marginTop: '1em',
+            }}
+          />
+        </>
+      ) : data ? (
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={4}>
           <Paper elevation={3}>
             <img
