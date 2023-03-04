@@ -25,6 +25,5 @@ export const useGetMedicines = ({
   return useQuery({
     queryFn: () => getMedicines({ page, limit }),
     queryKey: ['medicines', { page }],
-    keepPreviousData: true,
   });
 };

@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import {
   Badge,
   Box,
@@ -6,8 +5,6 @@ import {
   CircularProgress,
   Drawer,
   IconButton,
-  Paper,
-  Slide,
   Stack,
   Typography,
 } from '@mui/material';
@@ -15,28 +12,17 @@ import { Outlet, useNavigate } from 'react-router-dom';
 
 import { SectionContainer } from './SectionContainer';
 import { useAuth } from '@/features/auth/components/AuthProvider';
-import { socket } from '@/lib/socket-io';
-import { toast } from 'react-hot-toast';
-import { TUser } from '@/features/auth/types';
-import { CallNotification } from '@/features/calls/components/CallNotification';
 import {
   CartProvider,
   useCart,
-} from '@/features/medicines/components/CartProvider';
-import { ShoppingCart } from '@mui/icons-material';
+} from '@/features/orders/components/CartProvider';
 import { useDisclosure } from '@/hooks/useDisclosure';
-
-type TListenCallPayload = {
-  roomName: string;
-  token: string;
-  caller: TUser;
-};
+import { CallNotification } from '@/features/calls/components/CallNotification';
+import { Cart } from '@/features/orders/components/Cart';
 
 export const Header = () => {
   const { user, logoutFn } = useAuth();
-  const { totalItems } = useCart();
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <header>
@@ -54,14 +40,7 @@ export const Header = () => {
                 <Button color='error' onClick={logoutFn}>
                   Logout
                 </Button>
-                <Badge badgeContent={totalItems()} color='primary'>
-                  <IconButton onClick={onOpen}>
-                    <ShoppingCart />
-                  </IconButton>
-                  <Drawer onClose={onClose} open={isOpen} anchor='right'>
-                    hi
-                  </Drawer>
-                </Badge>
+                <Cart />
               </>
             ) : (
               <>

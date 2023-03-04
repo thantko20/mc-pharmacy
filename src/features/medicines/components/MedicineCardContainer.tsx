@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Grid, Pagination, Stack } from '@mui/material';
+import { Grid, Pagination, Skeleton, Stack } from '@mui/material';
 import { MedicineCard } from './MedicineCard';
 import { useGetMedicines } from '../api/getMedicines';
 
@@ -15,16 +15,34 @@ export const MedicineCardContainer = () => {
         spacing={{ xs: 2, md: 3 }}
         columns={{ xs: 4, sm: 8, md: 12 }}
       >
-        {data?.payload.map((item) => (
-          <Grid item key={item.id} xs={4} sm={4} md={4}>
-            <MedicineCard medicine={item} />
-          </Grid>
-        ))}
+        {isLoading ? (
+          <>
+            <Grid item xs={4} sm={4} md={4}>
+              <Skeleton variant='rounded' width='100%' height={200} />
+            </Grid>
+            <Grid item xs={4} sm={4} md={4}>
+              <Skeleton variant='rounded' width='100%' height={200} />
+            </Grid>
+            <Grid item xs={4} sm={4} md={4}>
+              <Skeleton variant='rounded' width='100%' height={200} />
+            </Grid>
+
+            <Grid item xs={4} sm={4} md={4}>
+              <Skeleton variant='rounded' width='100%' height={200} />
+            </Grid>
+          </>
+        ) : (
+          data?.payload.map((item) => (
+            <Grid item key={item.id} xs={4} sm={4} md={4}>
+              <MedicineCard medicine={item} />
+            </Grid>
+          ))
+        )}
       </Grid>
 
       {data ? (
         <Pagination
-          count={Math.round(data!.total / limit)}
+          count={Math.ceil(data!.total / limit)}
           shape='rounded'
           color='primary'
           variant='outlined'

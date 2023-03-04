@@ -1,7 +1,6 @@
 import { SectionContainer } from '@/components/SectionContainer';
 import { useGetMedicineDetail } from '@/features/medicines/api/getMedicineDetail';
-import { useCart } from '@/features/medicines/components/CartProvider';
-import { AspectRatio } from '@mui/joy';
+import { useCart } from '@/features/orders/components/CartProvider';
 import { Box, Button, Paper, Stack, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 

@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { TMedicine } from '@/features/medicines/types';
-import { useCart } from './CartProvider';
+import { useCart } from '@/features/orders/components/CartProvider';
 
 export const MedicineCard = ({ medicine }: { medicine: TMedicine }) => {
   const navigate = useNavigate();

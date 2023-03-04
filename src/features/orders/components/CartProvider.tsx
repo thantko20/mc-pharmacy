@@ -5,7 +5,7 @@ import {
   useContext,
   useState,
 } from 'react';
-import { TMedicine } from '../types';
+import { TMedicine } from '@/features/medicines/types';
 
 type TCartMedicine = TMedicine & { quantity: number };
 
