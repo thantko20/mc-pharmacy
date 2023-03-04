@@ -9,6 +9,9 @@ import { TUser } from '../types';
 import { TSuccessResponse } from '@/types';
 import { MyStorage } from '@/utils/MyStorage';
 import { socket } from '@/lib/socket-io';
+import { axios } from '@/lib/axios';
+import { AxiosError, AxiosResponse } from 'axios';
+import { toast } from 'react-hot-toast';
 
 type TAuthContext = {
   user: TUser | null;
@@ -22,6 +25,8 @@ type TAuthContext = {
   }) => void;
   logoutFn: () => void;
 };
+
+type TCheckUserResponse = TSuccessResponse<TUser>;
 
 const AuthContext = createContext<TAuthContext>({
   user: null,
@@ -38,24 +43,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const checkUser = async () => {
       try {
         setIsCheckingAuth(true);
-        const res = await fetch(
-          'https://pharmacydelivery-production.up.railway.app/api/users/me/info',
-          {
-            headers: {
-              authorization: MyStorage.getAccessToken() as string,
-              'Content-Type': 'application/json',
-            },
-          },
+
+        const data = await axios.get<never, TCheckUserResponse>(
+          '/users/me/info',
         );
 
-        if (!res.ok && res.status === 401) {
-          setUser(null);
-          return;
-        }
-
-        const data = (await res.json()) as TSuccessResponse<TUser>;
-
         setUser(data.payload);
+      } catch (error: unknown) {
+        if (error instanceof AxiosError && error.status === 401 && user) {
+          toast.success('Please log in again.');
+          setUser(null);
+        }
       } finally {
         setIsCheckingAuth(false);
       }

@@ -20,9 +20,6 @@ axios.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    if (originalAxios.isAxiosError(error)) {
-      return Promise.reject(error.response);
-    }
     return Promise.reject(error);
   },
 );
