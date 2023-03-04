@@ -44,11 +44,10 @@ export const MedicineCardContainer = () => {
         <Pagination
           count={Math.ceil(data!.total / limit)}
           shape='rounded'
-          color='primary'
-          variant='outlined'
+          color='standard'
+          variant='text'
           size='large'
-          onChange={(e, page) => {
-            console.log(page);
+          onChange={(_, page) => {
             setPage(page);
           }}
           page={page}

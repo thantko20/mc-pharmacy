@@ -1,24 +1,18 @@
 import {
-  Badge,
   Box,
   Button,
   CircularProgress,
-  Drawer,
-  IconButton,
   Stack,
   Typography,
 } from '@mui/material';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, Link as RouterLink } from 'react-router-dom';
 
 import { SectionContainer } from './SectionContainer';
 import { useAuth } from '@/features/auth/components/AuthProvider';
-import {
-  CartProvider,
-  useCart,
-} from '@/features/orders/components/CartProvider';
-import { useDisclosure } from '@/hooks/useDisclosure';
+import { CartProvider } from '@/features/orders/components/CartProvider';
 import { CallNotification } from '@/features/calls/components/CallNotification';
 import { Cart } from '@/features/orders/components/Cart';
+import { green } from '@mui/material/colors';
 
 export const Header = () => {
   const { user, logoutFn } = useAuth();
@@ -28,7 +22,16 @@ export const Header = () => {
     <header>
       <SectionContainer>
         <Stack direction='row' justifyContent='space-between'>
-          <Box fontSize='2rem' fontWeight={600}>
+          <Box
+            color={green[400]}
+            sx={{
+              textDecoration: 'none',
+            }}
+            fontSize={{ xs: '1.25rem', md: '2rem' }}
+            fontWeight={600}
+            component={RouterLink}
+            to='/'
+          >
             MC Pharmacy
           </Box>
           <Stack direction='row' alignItems='center' spacing={2}>
