@@ -34,7 +34,13 @@ const ProfileMenu = ({ user }: { user: TUser }) => {
       >
         <Stack direction='row' spacing={1} alignItems='center'>
           <Avatar alt={user.name} src={user.pictureUrls[0]} />
-          <Typography variant='subtitle1' component='span'>
+          <Typography
+            variant='subtitle1'
+            component='span'
+            sx={{
+              display: { xs: 'none', md: 'block' },
+            }}
+          >
             {user.name}
           </Typography>
         </Stack>
@@ -66,7 +72,12 @@ export const Header = () => {
   return (
     <header>
       <SectionContainer>
-        <Stack direction='row' justifyContent='space-between'>
+        <Stack
+          direction='row'
+          justifyContent='space-between'
+          alignItems='center'
+          spacing={1}
+        >
           <Box
             color={green[400]}
             sx={{

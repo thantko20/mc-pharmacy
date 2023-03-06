@@ -11,6 +11,7 @@ import {
   List,
   Typography,
   Grid,
+  Button,
 } from '@mui/material';
 import { useCart } from './CartProvider';
 
@@ -108,7 +109,11 @@ export const Cart = () => {
               );
             })}
           </List>
-          <Typography position='sticky'>Who am I?</Typography>
+          <Box>
+            <Button color='info' variant='contained'>
+              Next
+            </Button>
+          </Box>
         </Box>
       </Drawer>
     </>

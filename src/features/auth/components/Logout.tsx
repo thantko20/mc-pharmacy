@@ -15,7 +15,7 @@ export const Logout = () => {
 
   return (
     <>
-      <Button onClick={onOpen} color='error' variant='contained'>
+      <Button onClick={onOpen} color='error' variant='contained' size='small'>
         Logout
       </Button>
       <Dialog open={isOpen} onClose={onClose} fullWidth maxWidth='sm'>
