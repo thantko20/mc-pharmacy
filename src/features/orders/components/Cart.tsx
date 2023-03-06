@@ -1,5 +1,6 @@
 import { useDisclosure } from '@/hooks/useDisclosure';
-import { ShoppingCart } from '@mui/icons-material';
+import { Close, ShoppingCart } from '@mui/icons-material';
+import Image from 'mui-image';
 import {
   Badge,
   IconButton,
@@ -9,6 +10,7 @@ import {
   ListItem,
   List,
   Typography,
+  Grid,
 } from '@mui/material';
 import { useCart } from './CartProvider';
 
@@ -32,27 +34,81 @@ export const Cart = () => {
           padding: '0.75rem',
         }}
       >
-        <Box sx={{ width: '100vw', maxWidth: 400 }}>
-          {items.length > 0 ? (
-            <List>
-              {items.map((item) => (
-                <ListItem key={item._id}>
-                  <Stack
-                    direction='row'
-                    alignItems='center'
-                    justifyContent='space-between'
-                    spacing={2}
-                    width={1}
-                  >
-                    <Typography>{item.name}</Typography>
-                    <Typography>{item.quantity}</Typography>
-                  </Stack>
+        <Box
+          display='grid'
+          gridTemplateRows='min-content 1fr max-content'
+          gap={2}
+          width='100vw'
+          height='100%'
+          maxWidth={500}
+          position='relative'
+          sx={{
+            paddingBlock: '1rem',
+            paddingInline: '0.5rem',
+          }}
+        >
+          <IconButton
+            aria-label='close cart'
+            onClick={onClose}
+            sx={{
+              position: 'absolute',
+              top: 4,
+              left: 4,
+            }}
+          >
+            <Close />
+          </IconButton>
+          <Box>
+            <Typography variant='h5' textAlign='center' fontWeight={600}>
+              Catalogue
+            </Typography>
+          </Box>
+          <List
+            sx={{
+              overflow: 'auto',
+            }}
+          >
+            {items.map((item) => {
+              return (
+                <ListItem key={item._id} divider>
+                  <Grid container spacing={2} direction='row'>
+                    <Grid item xs='auto'>
+                      <Box boxShadow={2}>
+                        <Image
+                          src={item.pictureUrls[0]}
+                          width={100}
+                          height={100}
+                          showLoading
+                          duration={200}
+                        />
+                      </Box>
+                    </Grid>
+                    <Grid item xs>
+                      <Box>
+                        <Stack
+                          direction='row'
+                          justifyContent='space-between'
+                          spacing={1}
+                        >
+                          <Typography
+                            textOverflow='ellipsis'
+                            noWrap
+                            flexShrink={1}
+                          >
+                            {item.name}
+                          </Typography>
+                          <Typography fontWeight={600} flexShrink={0}>
+                            {item.price.toLocaleString()} MMK
+                          </Typography>
+                        </Stack>
+                      </Box>
+                    </Grid>
+                  </Grid>
                 </ListItem>
-              ))}
-            </List>
-          ) : (
-            <Typography>Empty Cart</Typography>
-          )}
+              );
+            })}
+          </List>
+          <Typography position='sticky'>Who am I?</Typography>
         </Box>
       </Drawer>
     </>
