@@ -35,3 +35,10 @@ export type TEndCallPayload = {
   roomSid: string;
   roomName: string;
 };
+
+export type TMissedCallPayload = {
+  callerId: string;
+  calleeId: string;
+  roomName: string;
+  roomSide: string;
+};

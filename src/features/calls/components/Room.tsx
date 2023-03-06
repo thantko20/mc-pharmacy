@@ -26,7 +26,11 @@ import Twilio, {
   Participant as TwilioParticipant,
   Room as TRoom,
 } from 'twilio-video';
-import { TCallDeclinePayload, TCallEndedPayload } from '../types';
+import {
+  TCallDeclinePayload,
+  TCallEndedPayload,
+  TMissedCallPayload,
+} from '../types';
 
 const useRoom = ({
   roomName,
@@ -57,7 +61,7 @@ const useRoom = ({
   };
 
   useEffect(() => {
-    const callEndedListener = ({ roomSid }: TCallEndedPayload) => {
+    const callEndedListener = (payload: TCallEndedPayload) => {
       toast(`Other participant hanged up the call.`, {
         icon: <Info />,
       });
@@ -69,9 +73,16 @@ const useRoom = ({
       hangUp();
     };
 
+    const missedCallListener = (payload: TMissedCallPayload) => {
+      toast.success('Call took too long.');
+      hangUp();
+    };
+
     socket.on('callEnded', callEndedListener);
 
     socket.on('declineCall', declineCallListener);
+
+    socket.on('missedCall', missedCallListener);
 
     return () => {
       socket.off('callEnded', callEndedListener);

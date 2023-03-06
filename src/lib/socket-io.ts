@@ -3,6 +3,7 @@ import {
   TCallEndedPayload,
   TEndCallPayload,
   TListenCallPayload,
+  TMissedCallPayload,
 } from '@/features/calls/types';
 import { MyStorage } from '@/utils/MyStorage';
 import { Socket, io } from 'socket.io-client';
@@ -11,6 +12,7 @@ interface ServerToClientEvents {
   declineCall: (payload: TCallDeclinePayload) => void;
   callEnded: (payload: TCallEndedPayload) => void;
   calling: (payload: TListenCallPayload) => void;
+  missedCall: (payload: TMissedCallPayload) => void;
 }
 interface ClientToServerEvents {
   startCall: (payload: {
