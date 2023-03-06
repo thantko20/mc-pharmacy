@@ -5,9 +5,7 @@ import {
   CardActions,
   CardContent,
   CardMedia,
-  Link,
   Typography,
-  makeStyles,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { TMedicine } from '@/features/medicines/types';
