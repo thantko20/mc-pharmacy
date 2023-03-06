@@ -74,7 +74,7 @@ const useRoom = ({
     };
 
     const missedCallListener = (payload: TMissedCallPayload) => {
-      toast.success('Call took too long.');
+      toast.error('Call took too long.');
       hangUp();
     };
 
@@ -87,6 +87,7 @@ const useRoom = ({
     return () => {
       socket.off('callEnded', callEndedListener);
       socket.off('declineCall', declineCallListener);
+      socket.off('missedCall', missedCallListener);
     };
   }, []);
 
@@ -134,7 +135,7 @@ const useRoom = ({
         });
       }
     } catch (error) {
-      console.log(error);
+      toast.error('There was a problem connecting to the room.');
     } finally {
       setIsConnectingToRoom(false);
     }
