@@ -1,6 +1,6 @@
 export type TCreateOrderPayload = {
-  medicines: {
-    medicineId: string;
+  orderDetails: {
+    medicine: string;
     quantity: number;
   }[];
   address: string;

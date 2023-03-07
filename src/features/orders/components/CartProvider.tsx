@@ -46,17 +46,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     if (!user) return;
 
     if (items.some((i) => i._id === medicine._id)) {
-      setItems((prevItems) => {
-        return prevItems.map((item) => {
-          if (item._id === medicine._id) {
-            return {
-              ...item,
-              quantity: item.quantity + 1,
-            };
-          }
-          return item;
+      if (isInStock(medicine._id)) {
+        setItems((prevItems) => {
+          return prevItems.map((item) => {
+            if (item._id === medicine._id) {
+              return {
+                ...item,
+                quantity: item.quantity + 1,
+              };
+            }
+            return item;
+          });
         });
-      });
+      }
     } else {
       setItems((prevItems) => [...prevItems, { ...medicine, quantity: 1 }]);
     }
@@ -70,32 +72,39 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const increaseQuantity = (id: string) => {
     if (!user) return;
 
-    setItems((prevItems) => {
-      const tempItems = [...prevItems];
-      const idx = tempItems.findIndex(
-        (value) => value._id === id && value.stocks > value.quantity + 1,
-      );
+    if (isInStock(id)) {
+      setItems((prevItems) => {
+        const tempItems = [...prevItems];
+        const idx = tempItems.findIndex((value) => value._id === id);
 
-      if (idx >= 0) {
-        tempItems[idx].quantity += 1;
+        if (idx >= 0) {
+          tempItems[idx].quantity += 1;
+          return tempItems;
+        }
+
         return tempItems;
-      }
-
-      return tempItems;
-    });
+      });
+    }
   };
 
   const decreaseQuantity = (id: string) => {
     if (!user) return;
 
-    setItems((prevItems) => {
-      return prevItems.map((item) => {
-        if (item.quantity > 0) {
-          return { ...item, quantity: item.quantity - 1 };
-        }
-        return item;
+    if (items.some((item) => item._id === id && item.quantity > 1)) {
+      setItems((prevItems) => {
+        const tempItems = [...prevItems];
+        const idx = tempItems.findIndex((medicine) => medicine._id === id);
+
+        tempItems[idx].quantity -= 1;
+        return tempItems;
       });
-    });
+    } else {
+      removeFromCart(id);
+    }
+  };
+
+  const isInStock = (id: string) => {
+    return items.some((item) => item._id === id && item.stocks > item.quantity);
   };
 
   const totalItems = useCallback(() => {
