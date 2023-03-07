@@ -38,7 +38,7 @@ const UserListItem = ({ user }: { user: TUser }) => {
       direction='row'
       spacing={4}
       justifyContent='space-between'
-      bgcolor={grey[200]}
+      bgcolor={grey[800]}
       p={1}
       borderRadius='0.25rem'
       alignItems='center'

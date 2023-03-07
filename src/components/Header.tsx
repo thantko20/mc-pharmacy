@@ -106,11 +106,11 @@ const ProfileMenu = ({ user }: { user: TUser }) => {
         sx={{
           padding: 1,
           border: 1,
-          borderColor: grey[200],
+          borderColor: grey[700],
           borderRadius: '0.25rem',
         }}
       >
-        <Stack direction='row' spacing={2} alignItems='center'>
+        <Stack direction='row' spacing={1} alignItems='center'>
           <Avatar
             alt={user.name}
             src={user.pictureUrls[0]}
@@ -119,8 +119,12 @@ const ProfileMenu = ({ user }: { user: TUser }) => {
               height: 42,
             }}
           />
-          <Stack direction='row' alignItems='center'>
-            <Stack>
+          <Stack direction='row' alignItems='center' spacing={2}>
+            <Stack
+              sx={{
+                display: { xs: 'none', md: 'flex' },
+              }}
+            >
               <Typography
                 textAlign='start'
                 variant='subtitle1'
