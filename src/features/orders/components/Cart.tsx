@@ -45,7 +45,7 @@ export const Cart = () => {
 
   return (
     <>
-      <IconButton onClick={onOpen}>
+      <IconButton onClick={onOpen} size='large'>
         <Badge badgeContent={totalItems()} color='primary'>
           <ShoppingCart />
         </Badge>

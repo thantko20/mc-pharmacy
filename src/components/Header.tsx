@@ -8,6 +8,14 @@ import {
   Button,
   Menu,
   MenuItem,
+  ButtonBase,
+  Icon,
+  MenuList,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@mui/material';
 import { green, grey } from '@mui/material/colors';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
@@ -15,7 +23,76 @@ import { SectionContainer } from './SectionContainer';
 import { Logout } from '@/features/auth/components/Logout';
 import { TUser } from '@/features/auth/types';
 import { useDisclosure } from '@/hooks/useDisclosure';
-import { useRef } from 'react';
+import { ReactElement, ReactNode, useRef } from 'react';
+import {
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+  LogoutRounded,
+  ReceiptLong,
+} from '@mui/icons-material';
+
+const ProfileMenuItem = ({
+  text,
+  icon,
+  onClick,
+}: {
+  text: string;
+  icon?: ReactElement;
+  onClick?: () => void;
+}) => {
+  return (
+    <MenuItem onClick={onClick}>
+      <Stack width={1} direction='row' spacing={1} alignItems='center'>
+        {icon ? (
+          <Icon
+            sx={{
+              width: 32,
+              height: 32,
+            }}
+          >
+            {icon}
+          </Icon>
+        ) : null}
+        <Typography>{text}</Typography>
+      </Stack>
+    </MenuItem>
+  );
+};
+
+const LogoutMenuItem = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { logoutFn } = useAuth();
+
+  return (
+    <>
+      <ProfileMenuItem
+        text='Logout'
+        icon={<LogoutRounded />}
+        onClick={onOpen}
+      />
+      <Dialog open={isOpen} onClose={onClose} fullWidth maxWidth='sm'>
+        <DialogTitle>Log out?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Are you sure about that?</DialogContentText>
+          <DialogActions>
+            <Button color='info' onClick={onClose}>
+              Cancel
+            </Button>
+            <Button
+              color='error'
+              onClick={() => {
+                logoutFn();
+                onClose();
+              }}
+            >
+              Logout
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
 
 const ProfileMenu = ({ user }: { user: TUser }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -23,43 +100,75 @@ const ProfileMenu = ({ user }: { user: TUser }) => {
 
   return (
     <Box>
-      <Button
+      <ButtonBase
         onClick={onOpen}
         ref={anchorRef}
         sx={{
-          textTransform: 'unset',
-          color: grey[700],
-          fontWeight: 500,
+          padding: 1,
+          border: 1,
+          borderColor: grey[200],
+          borderRadius: '0.25rem',
         }}
       >
-        <Stack direction='row' spacing={1} alignItems='center'>
-          <Avatar alt={user.name} src={user.pictureUrls[0]} />
-          <Typography
-            variant='subtitle1'
-            component='span'
+        <Stack direction='row' spacing={2} alignItems='center'>
+          <Avatar
+            alt={user.name}
+            src={user.pictureUrls[0]}
             sx={{
-              display: { xs: 'none', md: 'block' },
+              width: 42,
+              height: 42,
             }}
-          >
-            {user.name}
-          </Typography>
+          />
+          <Stack direction='row' alignItems='center'>
+            <Stack>
+              <Typography
+                variant='subtitle1'
+                fontSize='0.75rem'
+                color={grey[500]}
+              >
+                Hi, Welcome!
+              </Typography>
+              <Typography
+                variant='subtitle1'
+                component='span'
+                sx={{
+                  display: { xs: 'none', md: 'block' },
+                }}
+                fontWeight={600}
+              >
+                {user.name}
+              </Typography>
+            </Stack>
+            {isOpen ? (
+              <Icon>
+                <KeyboardArrowUp />
+              </Icon>
+            ) : (
+              <Icon>
+                <KeyboardArrowDown />
+              </Icon>
+            )}
+          </Stack>
         </Stack>
-      </Button>
-      <Menu open={isOpen} onClose={onClose} anchorEl={anchorRef.current}>
-        <MenuItem
+      </ButtonBase>
+      <Menu
+        open={isOpen}
+        onClose={onClose}
+        anchorEl={anchorRef.current}
+        PaperProps={{
+          sx: {
+            width: anchorRef.current?.clientWidth || 200,
+          },
+        }}
+      >
+        <MenuList
           sx={{
-            minWidth: 200,
+            width: 1,
           }}
         >
-          Orders
-        </MenuItem>
-        <MenuItem
-          sx={{
-            minWidth: 200,
-          }}
-        >
-          Profile
-        </MenuItem>
+          <ProfileMenuItem text='Orders' icon={<ReceiptLong />} />
+          <LogoutMenuItem />
+        </MenuList>
       </Menu>
     </Box>
   );
@@ -93,9 +202,9 @@ export const Header = () => {
           <Stack direction='row' alignItems='center' spacing={2}>
             {user ? (
               <>
-                <ProfileMenu user={user} />
-                <Logout />
+                {/* <Logout /> */}
                 <Cart />
+                <ProfileMenu user={user} />
               </>
             ) : (
               <>
