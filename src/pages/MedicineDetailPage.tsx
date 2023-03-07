@@ -16,9 +16,6 @@ export default function MedicineDetailPage() {
 
   const { data, isLoading } = useGetMedicineDetail({ id: medicineId });
   const { addToCart } = useCart();
-  const { quantity, increaseQuantity, decreaseQuantity } = useAddToCartQuantity(
-    { upperBound: data?.payload.stocks },
-  );
 
   return (
     <SectionContainer>
@@ -77,8 +74,9 @@ export default function MedicineDetailPage() {
               sx={{
                 marginTop: '1rem',
               }}
+              disabled={data.payload.stocks <= 0}
             >
-              Add To Cart
+              {data.payload.stocks <= 0 ? 'Out of Stock' : 'Add to Cart'}
             </Button>
           </Box>
         </Stack>

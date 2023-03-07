@@ -41,8 +41,9 @@ export const MedicineCard = ({ medicine }: { medicine: TMedicine }) => {
             ml: '1rem',
           }}
           onClick={() => addToCart({ ...medicine })}
+          disabled={medicine.stocks <= 0}
         >
-          Add To Cart
+          {medicine.stocks <= 0 ? 'Out of Stock' : 'Add to Cart'}
         </Button>
       </CardActions>
     </Card>

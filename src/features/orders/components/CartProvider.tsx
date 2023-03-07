@@ -46,19 +46,18 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     if (!user) return;
 
     if (items.some((i) => i._id === medicine._id)) {
-      if (isInStock(medicine._id)) {
-        setItems((prevItems) => {
-          return prevItems.map((item) => {
-            if (item._id === medicine._id) {
-              return {
-                ...item,
-                quantity: item.quantity + 1,
-              };
-            }
-            return item;
-          });
+      if (!isInStock(medicine._id)) return;
+      setItems((prevItems) => {
+        return prevItems.map((item) => {
+          if (item._id === medicine._id) {
+            return {
+              ...item,
+              quantity: item.quantity + 1,
+            };
+          }
+          return item;
         });
-      }
+      });
     } else {
       setItems((prevItems) => [...prevItems, { ...medicine, quantity: 1 }]);
     }
