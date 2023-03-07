@@ -26,7 +26,10 @@ type TAuthContext = {
   logoutFn: () => void;
 };
 
-type TCheckUserResponse = TSuccessResponse<TUser>;
+type TCheckUserResponse = TSuccessResponse<{
+  user: TUser;
+  roleType?: string;
+}>;
 
 const AuthContext = createContext<TAuthContext>({
   user: null,
@@ -48,7 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           '/users/me/info',
         );
 
-        setUser(data.payload);
+        setUser(data.payload.user);
       } catch (error: unknown) {
         if (error instanceof AxiosError && error.status === 401 && user) {
           toast.success('Please log in again.');
