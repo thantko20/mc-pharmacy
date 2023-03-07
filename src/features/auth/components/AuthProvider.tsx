@@ -10,7 +10,7 @@ import { TSuccessResponse } from '@/types';
 import { MyStorage } from '@/utils/MyStorage';
 import { socket } from '@/lib/socket-io';
 import { axios } from '@/lib/axios';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
 
 type TAuthContext = {
@@ -26,10 +26,7 @@ type TAuthContext = {
   logoutFn: () => void;
 };
 
-type TCheckUserResponse = TSuccessResponse<{
-  user: TUser;
-  roleType?: string;
-}>;
+type TCheckUserResponse = TSuccessResponse<TUser>;
 
 const AuthContext = createContext<TAuthContext>({
   user: null,
@@ -51,7 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           '/users/me/info',
         );
 
-        setUser(data.payload.user);
+        setUser(data.payload);
       } catch (error: unknown) {
         if (error instanceof AxiosError && error.status === 401 && user) {
           toast.success('Please log in again.');

@@ -188,7 +188,7 @@ export const Header = () => {
             to='/'
           >
             <Image
-              src='/public/images/myancare_logo.png'
+              src='/images/myancare_logo.png'
               width={64}
               height={64}
               duration={200}
