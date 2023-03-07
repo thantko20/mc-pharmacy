@@ -43,11 +43,11 @@ export const MedicineCard = ({ medicine }: { medicine: TMedicine }) => {
         </Typography>
         <Button
           size='small'
-          variant='outlined'
+          variant='contained'
           sx={{
             ml: '1rem',
           }}
-          onClick={() => addToCart({ ...medicine, quantity: 1 })}
+          onClick={() => addToCart({ ...medicine })}
         >
           Add To Cart
         </Button>

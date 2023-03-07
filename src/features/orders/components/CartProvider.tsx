@@ -8,13 +8,12 @@ import {
 } from 'react';
 import { TMedicine } from '@/features/medicines/types';
 import { useAuth } from '@/features/auth/components/AuthProvider';
-import { useCreateOrder } from '../api/createOrder';
 
 type TCartMedicine = TMedicine & { quantity: number };
 
 type TCartContext = {
   items: TCartMedicine[];
-  addToCart: (item: TCartMedicine) => void;
+  addToCart: (item: TMedicine) => void;
   removeFromCart: (id: string) => void;
   increaseQuantity: (id: string) => void;
   decreaseQuantity: (id: string) => void;
@@ -36,7 +35,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<TCartMedicine[]>([]);
 
   const { user } = useAuth();
-  const mutation = useCreateOrder();
 
   useEffect(() => {
     if (!user) {
@@ -44,27 +42,23 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user]);
 
-  const addToCart = (item: TCartMedicine) => {
+  const addToCart = (medicine: TMedicine) => {
     if (!user) return;
 
-    if (items.some((i) => i._id === item._id)) {
+    if (items.some((i) => i._id === medicine._id)) {
       setItems((prevItems) => {
-        const tempItems = [...prevItems];
-
-        const tempIdx = tempItems.findIndex((value) => value._id === item._id);
-
-        if (tempIdx >= 0) {
-          const isOverStocks =
-            item.stocks < tempItems[tempIdx].quantity + item.quantity;
-          tempItems[tempIdx].quantity += isOverStocks ? 0 : item.quantity;
-
-          return tempItems;
-        }
-
-        return tempItems;
+        return prevItems.map((item) => {
+          if (item._id === medicine._id) {
+            return {
+              ...item,
+              quantity: item.quantity + 1,
+            };
+          }
+          return item;
+        });
       });
     } else {
-      setItems((prevItems) => [...prevItems, item]);
+      setItems((prevItems) => [...prevItems, { ...medicine, quantity: 1 }]);
     }
   };
 

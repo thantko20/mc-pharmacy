@@ -39,10 +39,17 @@ export const MainLayout = () => {
       ) : (
         <CartProvider>
           <CallNotification />
-          <Header />
-          <main>
-            <Outlet />
-          </main>
+          <Box
+            display='grid'
+            gridTemplateRows='max-content 1fr max-content'
+            height='100vh'
+          >
+            <Header />
+            <main>
+              <Outlet />
+            </main>
+            <div></div>
+          </Box>
         </CartProvider>
       )}
     </div>
