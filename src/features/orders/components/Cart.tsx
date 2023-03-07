@@ -14,10 +14,34 @@ import {
   Button,
 } from '@mui/material';
 import { useCart } from './CartProvider';
+import { useCreateOrder } from '../api/createOrder';
+import { toast } from 'react-hot-toast';
+import { LoadingButton } from '@mui/lab';
 
 export const Cart = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { totalItems, items } = useCart();
+  const { totalItems, items, clearCart } = useCart();
+  const mutation = useCreateOrder();
+
+  const checkOut = ({ address }: { address: string }) => {
+    if (items.length === 0) return;
+
+    const orderItems = items.map((item) => ({
+      medicineId: item._id,
+      quantity: item.quantity,
+    }));
+
+    mutation.mutate(
+      { medicines: orderItems, address },
+      {
+        onSuccess: (data) => {
+          console.log(data);
+          clearCart();
+          toast.success('Thanks for ordering :)');
+        },
+      },
+    );
+  };
 
   return (
     <>
@@ -110,9 +134,13 @@ export const Cart = () => {
             })}
           </List>
           <Box>
-            <Button color='info' variant='contained'>
-              Next
-            </Button>
+            <LoadingButton
+              variant='contained'
+              onClick={() => checkOut({ address: 'Paris' })}
+              loading={mutation.isLoading}
+            >
+              Checkout
+            </LoadingButton>
           </Box>
         </Box>
       </Drawer>

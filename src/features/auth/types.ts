@@ -10,4 +10,5 @@ export type TUser = {
   favouriteMedicines: string[];
   createdAt: string;
   updatedAt: string;
+  roleType?: string;
 };
