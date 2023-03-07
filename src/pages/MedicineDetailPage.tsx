@@ -2,16 +2,8 @@ import { SectionContainer } from '@/components/SectionContainer';
 import { useGetMedicineDetail } from '@/features/medicines/api/getMedicineDetail';
 import { useCart } from '@/features/orders/components/CartProvider';
 import { useAddToCartQuantity } from '@/hooks/useAddToCartQuantity';
-import { Add, Remove } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  IconButton,
-  Paper,
-  Skeleton,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Paper, Skeleton, Stack, Typography } from '@mui/material';
+import { grey } from '@mui/material/colors';
 import Image from 'mui-image';
 import { useParams } from 'react-router-dom';
 
@@ -76,7 +68,7 @@ export default function MedicineDetailPage() {
             <Typography gutterBottom fontSize='1.5rem'>
               {data?.payload.price.toLocaleString()} MMK
             </Typography>
-            <Typography variant='body1' mt={2}>
+            <Typography variant='body1' mt={2} color={grey[600]}>
               {data?.payload.details}
             </Typography>
             <Button

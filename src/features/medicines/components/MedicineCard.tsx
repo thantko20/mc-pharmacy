@@ -10,13 +10,14 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { TMedicine } from '@/features/medicines/types';
 import { useCart } from '@/features/orders/components/CartProvider';
+import { grey } from '@mui/material/colors';
 
 export const MedicineCard = ({ medicine }: { medicine: TMedicine }) => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
 
   return (
-    <Card elevation={4}>
+    <Card elevation={2}>
       <CardActionArea onClick={() => navigate(`/medicines/${medicine._id}`)}>
         <CardMedia
           sx={{ height: 140 }}
@@ -24,21 +25,13 @@ export const MedicineCard = ({ medicine }: { medicine: TMedicine }) => {
           title={medicine.name}
         />
         <CardContent>
-          <Typography
-            noWrap
-            variant='h5'
-            sx={{
-              '&:hover': {
-                textDecoration: 'underline',
-              },
-            }}
-          >
+          <Typography noWrap variant='h5' fontWeight={600}>
             {medicine.name}
           </Typography>
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Typography fontWeight={600}>
+        <Typography fontWeight={600} color={grey[600]}>
           {medicine.price.toLocaleString()} MMK
         </Typography>
         <Button

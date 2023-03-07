@@ -122,6 +122,7 @@ const ProfileMenu = ({ user }: { user: TUser }) => {
           <Stack direction='row' alignItems='center'>
             <Stack>
               <Typography
+                textAlign='start'
                 variant='subtitle1'
                 fontSize='0.75rem'
                 color={grey[500]}
