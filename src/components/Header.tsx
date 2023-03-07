@@ -17,19 +17,19 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
-import { green, grey } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { SectionContainer } from './SectionContainer';
-import { Logout } from '@/features/auth/components/Logout';
 import { TUser } from '@/features/auth/types';
 import { useDisclosure } from '@/hooks/useDisclosure';
-import { ReactElement, ReactNode, useRef } from 'react';
+import { ReactElement, useRef } from 'react';
 import {
   KeyboardArrowDown,
   KeyboardArrowUp,
   LogoutRounded,
   ReceiptLong,
 } from '@mui/icons-material';
+import Image from 'mui-image';
 
 const ProfileMenuItem = ({
   text,
@@ -128,14 +128,7 @@ const ProfileMenu = ({ user }: { user: TUser }) => {
               >
                 Hi, Welcome!
               </Typography>
-              <Typography
-                variant='subtitle1'
-                component='span'
-                sx={{
-                  display: { xs: 'none', md: 'block' },
-                }}
-                fontWeight={600}
-              >
+              <Typography variant='subtitle1' component='span' fontWeight={600}>
                 {user.name}
               </Typography>
             </Stack>
@@ -188,21 +181,21 @@ export const Header = () => {
           spacing={1}
         >
           <Box
-            color={green[400]}
-            sx={{
-              textDecoration: 'none',
-            }}
-            fontSize={{ xs: '1.25rem', md: '2rem' }}
-            fontWeight={600}
+            borderRadius='100%'
+            overflow='hidden'
             component={RouterLink}
             to='/'
           >
-            MC Pharmacy
+            <Image
+              src='images/myancare_logo.png'
+              width={64}
+              height={64}
+              duration={200}
+            />
           </Box>
           <Stack direction='row' alignItems='center' spacing={2}>
             {user ? (
               <>
-                {/* <Logout /> */}
                 <Cart />
                 <ProfileMenu user={user} />
               </>
