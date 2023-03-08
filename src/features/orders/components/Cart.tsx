@@ -12,12 +12,15 @@ import {
   List,
   Typography,
   Grid,
+  TextField,
+  Button,
 } from '@mui/material';
 import { useCart } from './CartProvider';
 import { useCreateOrder } from '../api/createOrder';
 import { toast } from 'react-hot-toast';
 import { LoadingButton } from '@mui/lab';
 import { grey } from '@mui/material/colors';
+import { useState } from 'react';
 
 type EditQuantityProps = {
   increaseQuantity: () => void;
@@ -54,8 +57,25 @@ export const Cart = () => {
 
   const [parent] = useAutoAnimate();
 
+  const [checkOutStatus, setCheckoutStatus] = useState<'preview' | 'address'>(
+    'preview',
+  );
+
+  const [address, setAddress] = useState('');
+
+  const reset = () => {
+    clearCart();
+    setAddress('');
+    setCheckoutStatus('preview');
+  };
+
   const checkOut = ({ address }: { address: string }) => {
     if (items.length === 0) return;
+
+    if (!address) {
+      toast.error('Please fill in the address.');
+      return;
+    }
 
     const orderItems = items.map((item) => ({
       medicine: item._id,
@@ -66,8 +86,10 @@ export const Cart = () => {
       { orderDetails: orderItems, address },
       {
         onSuccess: () => {
-          clearCart();
           toast.success('Thanks for ordering :)');
+        },
+        onSettled: () => {
+          reset();
         },
       },
     );
@@ -115,84 +137,121 @@ export const Cart = () => {
           </IconButton>
           <Box>
             <Typography variant='h5' textAlign='center' fontWeight={600}>
-              Catalogue
+              {checkOutStatus === 'preview' ? 'Catalogue' : 'Fill in Address'}
             </Typography>
           </Box>
           <Box>
-            <List
-              sx={{
-                overflow: 'auto',
-              }}
-              ref={parent}
-            >
-              {items.map((item) => {
-                return (
-                  <ListItem key={item._id} divider>
-                    <Grid container spacing={2} direction='row'>
-                      <Grid item xs='auto'>
-                        <Box boxShadow={2}>
-                          <Image
-                            src={item.pictureUrls[0]}
-                            width={100}
-                            height={100}
-                            showLoading
-                            duration={200}
-                          />
-                        </Box>
-                      </Grid>
-                      <Grid item xs>
-                        <Stack height={1} justifyContent='space-between'>
-                          <Stack
-                            direction='row'
-                            justifyContent='space-between'
-                            spacing={1}
-                          >
-                            <Typography
-                              textOverflow='ellipsis'
-                              noWrap
-                              flexShrink={1}
-                            >
-                              {item.name}
-                            </Typography>
-                            <Typography fontWeight={600} flexShrink={0}>
-                              {item.price.toLocaleString()} MMK
-                            </Typography>
-                          </Stack>
-                          <Box>
-                            <EditQuantity
-                              increaseQuantity={() =>
-                                increaseQuantity(item._id)
-                              }
-                              decreaseQuantity={() =>
-                                decreaseQuantity(item._id)
-                              }
-                              quantity={item.quantity}
-                            />
-                          </Box>
-                        </Stack>
-                      </Grid>
-                    </Grid>
-                  </ListItem>
-                );
-              })}
-            </List>
-            {items.length < 1 ? (
-              <Typography textAlign='center' color={grey[500]}>
-                No items in the cart
-              </Typography>
-            ) : null}
+            {checkOutStatus === 'preview' ? (
+              <>
+                <List
+                  sx={{
+                    overflow: 'auto',
+                  }}
+                  ref={parent}
+                >
+                  {items.map((item) => {
+                    return (
+                      <ListItem key={item._id} divider>
+                        <Grid container spacing={2} direction='row'>
+                          <Grid item xs='auto'>
+                            <Box boxShadow={2}>
+                              <Image
+                                src={item.pictureUrls[0]}
+                                width={100}
+                                height={100}
+                                showLoading
+                                duration={200}
+                              />
+                            </Box>
+                          </Grid>
+                          <Grid item xs>
+                            <Stack height={1} justifyContent='space-between'>
+                              <Stack
+                                direction='row'
+                                justifyContent='space-between'
+                                spacing={1}
+                              >
+                                <Typography
+                                  textOverflow='ellipsis'
+                                  noWrap
+                                  flexShrink={1}
+                                >
+                                  {item.name}
+                                </Typography>
+                                <Typography fontWeight={600} flexShrink={0}>
+                                  {item.price.toLocaleString()} MMK
+                                </Typography>
+                              </Stack>
+                              <Box>
+                                <EditQuantity
+                                  increaseQuantity={() =>
+                                    increaseQuantity(item._id)
+                                  }
+                                  decreaseQuantity={() =>
+                                    decreaseQuantity(item._id)
+                                  }
+                                  quantity={item.quantity}
+                                />
+                              </Box>
+                            </Stack>
+                          </Grid>
+                        </Grid>
+                      </ListItem>
+                    );
+                  })}
+                </List>
+                {items.length < 1 ? (
+                  <Typography textAlign='center' color={grey[500]}>
+                    No items in the cart
+                  </Typography>
+                ) : null}
+              </>
+            ) : (
+              <Stack
+                height={1}
+                width={1}
+                justifyContent='center'
+                alignItems='center'
+              >
+                <TextField
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  label='Address'
+                />
+              </Stack>
+            )}
           </Box>
 
           {items.length > 0 ? (
-            <Box>
-              <LoadingButton
-                variant='contained'
-                onClick={() => checkOut({ address: 'Paris' })}
-                loading={mutation.isLoading}
-              >
-                Checkout
-              </LoadingButton>
-            </Box>
+            <Stack direction='row' justifyContent='space-between'>
+              {checkOutStatus === 'preview' ? (
+                <>
+                  <Button disabled>Back</Button>
+                  <Button
+                    onClick={() => {
+                      if (items.length > 0) {
+                        setCheckoutStatus('address');
+                      }
+                    }}
+                  >
+                    Next
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button onClick={() => setCheckoutStatus('preview')}>
+                    Back
+                  </Button>
+                  <LoadingButton
+                    onClick={() => checkOut({ address })}
+                    loading={mutation.isLoading}
+                    disabled={!!!address}
+                  >
+                    Checkout
+                  </LoadingButton>
+                </>
+              )}
+            </Stack>
           ) : null}
         </Box>
       </Drawer>
