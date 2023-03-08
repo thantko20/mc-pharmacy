@@ -33,11 +33,11 @@ export default function OrdersPage() {
             >
               <TableHead>
                 <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Total Amount</TableCell>
-                  <TableCell>Ordered At</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>ID</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Total Amount</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Ordered At</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -45,7 +45,7 @@ export default function OrdersPage() {
                   <TableRow key={order._id}>
                     <TableCell>{order.id}</TableCell>
                     <TableCell>{order.status}</TableCell>
-                    <TableCell align='right'>{order.totalPrice}</TableCell>
+                    <TableCell>{order.totalPrice}</TableCell>
                     <TableCell>
                       {format(new Date(order.createdAt), 'PPpp')}
                     </TableCell>

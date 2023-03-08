@@ -19,7 +19,7 @@ export type TOrder = {
   totalQuantity: number;
   totalPrice: number;
   userId: string;
-  status: string;
+  status: 'pending' | 'deliver' | 'complete' | 'cancel';
   address: string;
   createdAt: string;
   updatedAt: string;
