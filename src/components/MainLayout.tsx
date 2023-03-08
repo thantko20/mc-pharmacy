@@ -15,6 +15,7 @@ import { CallNotification } from '@/features/calls/components/CallNotification';
 import { Cart } from '@/features/orders/components/Cart';
 import { green } from '@mui/material/colors';
 import { Header } from './Header';
+import { AnimatePresence } from 'framer-motion';
 
 export const MainLayout = () => {
   const { isCheckingAuth } = useAuth();
@@ -47,7 +48,9 @@ export const MainLayout = () => {
           >
             <Header />
             <main>
-              <Outlet />
+              <AnimatePresence>
+                <Outlet />
+              </AnimatePresence>
             </main>
             <div></div>
           </Box>

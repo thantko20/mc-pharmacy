@@ -1,10 +1,13 @@
+import { MyPage } from '@/components/MyPage';
 import { SectionContainer } from '@/components/SectionContainer';
 import { LoginForm } from '@/features/auth/components/LoginForm';
 
 export function LoginPage() {
   return (
-    <SectionContainer>
-      <LoginForm />
-    </SectionContainer>
+    <MyPage>
+      <SectionContainer>
+        <LoginForm />
+      </SectionContainer>
+    </MyPage>
   );
 }

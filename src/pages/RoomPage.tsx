@@ -2,6 +2,7 @@ import { SectionContainer } from '@/components/SectionContainer';
 import { useLocation, useParams } from 'react-router-dom';
 import { TUser } from '@/features/auth/types';
 import { Room } from '@/features/calls/components/Room';
+import { MyPage } from '@/components/MyPage';
 
 const RoomPage = () => {
   const location = useLocation();
@@ -18,14 +19,16 @@ const RoomPage = () => {
   }
 
   return (
-    <SectionContainer>
-      <Room
-        roomName={roomName}
-        token={token}
-        otherParticipant={otherParticipant}
-        isMeCaller={isMeCaller}
-      />
-    </SectionContainer>
+    <MyPage>
+      <SectionContainer>
+        <Room
+          roomName={roomName}
+          token={token}
+          otherParticipant={otherParticipant}
+          isMeCaller={isMeCaller}
+        />
+      </SectionContainer>
+    </MyPage>
   );
 };
 

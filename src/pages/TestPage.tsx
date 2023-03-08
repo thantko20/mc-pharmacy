@@ -1,3 +1,4 @@
+import { MyPage } from '@/components/MyPage';
 import { SectionContainer } from '@/components/SectionContainer';
 import { TUser } from '@/features/auth/types';
 import { getTokenAndRoomName } from '@/features/calls/api/getTokenAndRoomName';
@@ -70,14 +71,16 @@ export default function TestPage() {
   }, []);
 
   return (
-    <SectionContainer>
-      <Container maxWidth='sm'>
-        <Stack direction='column' spacing={2}>
-          {users.map((user) => (
-            <UserListItem key={user.id} user={user} />
-          ))}
-        </Stack>
-      </Container>
-    </SectionContainer>
+    <MyPage>
+      <SectionContainer>
+        <Container maxWidth='sm'>
+          <Stack direction='column' spacing={2}>
+            {users.map((user) => (
+              <UserListItem key={user.id} user={user} />
+            ))}
+          </Stack>
+        </Container>
+      </SectionContainer>
+    </MyPage>
   );
 }

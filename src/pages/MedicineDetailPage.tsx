@@ -1,3 +1,4 @@
+import { MyPage } from '@/components/MyPage';
 import { SectionContainer } from '@/components/SectionContainer';
 import { useGetMedicineDetail } from '@/features/medicines/api/getMedicineDetail';
 import { useCart } from '@/features/orders/components/CartProvider';
@@ -18,69 +19,71 @@ export default function MedicineDetailPage() {
   const { addToCart } = useCart();
 
   return (
-    <SectionContainer>
-      {isLoading ? (
-        <>
-          <Skeleton width='100%' height={400} variant='rectangular' />
-          <Skeleton
-            width='80%'
-            height={20}
-            variant='rectangular'
-            sx={{
-              marginTop: '1em',
-            }}
-          />
-          <Skeleton
-            width='100%'
-            height={20}
-            variant='rectangular'
-            sx={{
-              marginTop: '1em',
-            }}
-          />
-        </>
-      ) : data ? (
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={4}>
-          <Paper
-            elevation={3}
-            sx={{
-              width: 1,
-              height: 1,
-              maxWidth: 500,
-              maxHeight: 500,
-              alignSelf: 'center',
-              borderRadius: '0.25rem',
-            }}
-          >
-            <Image
-              src={data.payload.pictureUrls[0]}
-              alt={data.payload.name}
-              duration={300}
-            />
-          </Paper>
-          <Box>
-            <Typography variant='h3' fontWeight={600}>
-              {data?.payload.name}
-            </Typography>
-            <Typography gutterBottom fontSize='1.5rem'>
-              {data?.payload.price.toLocaleString()} MMK
-            </Typography>
-            <Typography variant='body1' mt={2} color={grey[600]}>
-              {data?.payload.details}
-            </Typography>
-            <Button
-              variant='contained'
-              onClick={() => addToCart(data.payload)}
+    <MyPage>
+      <SectionContainer>
+        {isLoading ? (
+          <>
+            <Skeleton width='100%' height={400} variant='rectangular' />
+            <Skeleton
+              width='80%'
+              height={20}
+              variant='rectangular'
               sx={{
-                marginTop: '1rem',
+                marginTop: '1em',
               }}
-              disabled={data.payload.stocks <= 0}
+            />
+            <Skeleton
+              width='100%'
+              height={20}
+              variant='rectangular'
+              sx={{
+                marginTop: '1em',
+              }}
+            />
+          </>
+        ) : data ? (
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={4}>
+            <Paper
+              elevation={3}
+              sx={{
+                width: 1,
+                height: 1,
+                maxWidth: 500,
+                maxHeight: 500,
+                alignSelf: 'center',
+                borderRadius: '0.25rem',
+              }}
             >
-              {data.payload.stocks <= 0 ? 'Out of Stock' : 'Add to Cart'}
-            </Button>
-          </Box>
-        </Stack>
-      ) : null}
-    </SectionContainer>
+              <Image
+                src={data.payload.pictureUrls[0]}
+                alt={data.payload.name}
+                duration={300}
+              />
+            </Paper>
+            <Box>
+              <Typography variant='h3' fontWeight={600}>
+                {data?.payload.name}
+              </Typography>
+              <Typography gutterBottom fontSize='1.5rem'>
+                {data?.payload.price.toLocaleString()} MMK
+              </Typography>
+              <Typography variant='body1' mt={2} color={grey[600]}>
+                {data?.payload.details}
+              </Typography>
+              <Button
+                variant='contained'
+                onClick={() => addToCart(data.payload)}
+                sx={{
+                  marginTop: '1rem',
+                }}
+                disabled={data.payload.stocks <= 0}
+              >
+                {data.payload.stocks <= 0 ? 'Out of Stock' : 'Add to Cart'}
+              </Button>
+            </Box>
+          </Stack>
+        ) : null}
+      </SectionContainer>
+    </MyPage>
   );
 }
