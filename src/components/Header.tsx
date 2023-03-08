@@ -156,6 +156,7 @@ const ProfileMenu = ({ user }: { user: TUser }) => {
         PaperProps={{
           sx: {
             width: anchorRef.current?.clientWidth || 200,
+            minWidth: 200,
           },
         }}
       >

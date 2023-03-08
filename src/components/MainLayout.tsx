@@ -42,6 +42,7 @@ export const MainLayout = () => {
           <Box
             display='grid'
             gridTemplateRows='max-content 1fr max-content'
+            gridTemplateColumns='minmax(300px, 1fr)'
             height='100vh'
           >
             <Header />
