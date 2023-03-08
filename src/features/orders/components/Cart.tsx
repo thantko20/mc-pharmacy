@@ -21,6 +21,7 @@ import { toast } from 'react-hot-toast';
 import { LoadingButton } from '@mui/lab';
 import { grey } from '@mui/material/colors';
 import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 type EditQuantityProps = {
   increaseQuantity: () => void;
@@ -136,6 +137,7 @@ export const Cart = () => {
             paddingBlock: '1rem',
             paddingInline: '0.5rem',
           }}
+          overflow='hidden'
         >
           <IconButton
             aria-label='close cart'
@@ -154,85 +156,121 @@ export const Cart = () => {
             </Typography>
           </Box>
           <Box>
-            {checkOutStatus === 'preview' ? (
-              <>
-                <List
-                  sx={{
-                    overflow: 'auto',
+            <AnimatePresence initial={false} mode='popLayout'>
+              {checkOutStatus === 'preview' ? (
+                <Box
+                  component={motion.div}
+                  key='preview'
+                  initial={{ x: -100, opacity: 0.5 }}
+                  animate={{
+                    x: 0,
+                    opacity: 1,
+                    transition: {
+                      duration: 0.3,
+                      type: 'keyframes',
+                    },
                   }}
-                  ref={parent}
+                  exit={{
+                    x: -100,
+                    opacity: 0,
+                  }}
                 >
-                  {items.map((item) => {
-                    return (
-                      <ListItem key={item._id} divider>
-                        <Grid container spacing={2} direction='row'>
-                          <Grid item xs='auto'>
-                            <Box boxShadow={2}>
-                              <Image
-                                src={item.pictureUrls[0]}
-                                width={100}
-                                height={100}
-                                showLoading
-                                duration={200}
-                              />
-                            </Box>
-                          </Grid>
-                          <Grid item xs>
-                            <Stack height={1} justifyContent='space-between'>
-                              <Stack
-                                direction='row'
-                                justifyContent='space-between'
-                                spacing={1}
-                              >
-                                <Typography
-                                  textOverflow='ellipsis'
-                                  noWrap
-                                  flexShrink={1}
-                                >
-                                  {item.name}
-                                </Typography>
-                                <Typography fontWeight={600} flexShrink={0}>
-                                  {item.price.toLocaleString()} MMK
-                                </Typography>
-                              </Stack>
-                              <Box>
-                                <EditQuantity
-                                  increaseQuantity={() =>
-                                    increaseQuantity(item._id)
-                                  }
-                                  decreaseQuantity={() =>
-                                    decreaseQuantity(item._id)
-                                  }
-                                  quantity={item.quantity}
+                  <List
+                    sx={{
+                      overflow: 'auto',
+                    }}
+                    ref={parent}
+                  >
+                    {items.map((item) => {
+                      return (
+                        <ListItem key={item._id} divider>
+                          <Grid container spacing={2} direction='row'>
+                            <Grid item xs='auto'>
+                              <Box boxShadow={2}>
+                                <Image
+                                  src={item.pictureUrls[0]}
+                                  width={100}
+                                  height={100}
+                                  showLoading
+                                  duration={200}
                                 />
                               </Box>
-                            </Stack>
+                            </Grid>
+                            <Grid item xs>
+                              <Stack height={1} justifyContent='space-between'>
+                                <Stack
+                                  direction='row'
+                                  justifyContent='space-between'
+                                  spacing={1}
+                                >
+                                  <Typography
+                                    textOverflow='ellipsis'
+                                    noWrap
+                                    flexShrink={1}
+                                  >
+                                    {item.name}
+                                  </Typography>
+                                  <Typography fontWeight={600} flexShrink={0}>
+                                    {item.price.toLocaleString()} MMK
+                                  </Typography>
+                                </Stack>
+                                <Box>
+                                  <EditQuantity
+                                    increaseQuantity={() =>
+                                      increaseQuantity(item._id)
+                                    }
+                                    decreaseQuantity={() =>
+                                      decreaseQuantity(item._id)
+                                    }
+                                    quantity={item.quantity}
+                                  />
+                                </Box>
+                              </Stack>
+                            </Grid>
                           </Grid>
-                        </Grid>
-                      </ListItem>
-                    );
-                  })}
-                </List>
-                {items.length < 1 ? (
-                  <Typography textAlign='center' color={grey[500]}>
-                    No items in the cart
-                  </Typography>
-                ) : null}
-              </>
-            ) : (
-              <Stack
-                height={1}
-                width={1}
-                justifyContent='center'
-                alignItems='center'
-              >
-                <TextField
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  label='Address'
-                />
-              </Stack>
-            )}
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+                  {items.length < 1 ? (
+                    <Typography textAlign='center' color={grey[500]}>
+                      No items in the cart
+                    </Typography>
+                  ) : null}
+                </Box>
+              ) : (
+                <Stack
+                  key='address'
+                  height={1}
+                  width={1}
+                  justifyContent='center'
+                  alignItems='center'
+                  component={motion.div}
+                  initial={{
+                    x: 100,
+                    opacity: 0.5,
+                  }}
+                  animate={{
+                    x: 0,
+                    opacity: 1,
+                    transition: {
+                      duration: 0.3,
+                      type: 'keyframes',
+                    },
+                  }}
+                  exit={{
+                    x: 100,
+                    opacity: 0,
+                  }}
+                >
+                  <TextField
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    label='Address'
+                  />
+                </Stack>
+              )}
+            </AnimatePresence>
           </Box>
 
           {items.length > 0 ? (
