@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 type TGetAllOrdersResponsePayload = TSuccessResponse<TOrder[]>;
 
 const getAllOrders = () => {
-  return axios.get<never, TGetAllOrdersResponsePayload>('/orders');
+  return axios.get<never, TGetAllOrdersResponsePayload>('/orders/me');
 };
 
 export const useGetAllOrders = () => {

@@ -144,8 +144,8 @@ export const Cart = () => {
           sx={{
             paddingBlock: '1rem',
             paddingInline: '0.5rem',
+            overflow: 'hidden',
           }}
-          overflow='hidden'
         >
           <IconButton
             aria-label='close cart'
@@ -163,19 +163,29 @@ export const Cart = () => {
               {checkOutStatus === 'preview' ? 'Catalogue' : 'Fill in Address'}
             </Typography>
           </Box>
-          <Box>
+          <Box
+            sx={{
+              overflowY: 'auto',
+              overflowX: 'hidden',
+              position: 'relative',
+              zIndex: 5,
+            }}
+          >
             <AnimatePresence initial={false} mode='popLayout'>
               {checkOutStatus === 'preview' ? (
                 <Box
                   component={motion.div}
                   key='preview'
+                  sx={{
+                    overflowY: 'auto',
+                  }}
                   initial={{ x: '-100%', opacity: 0.5 }}
                   animate={{
                     x: 0,
                     opacity: 1,
                     transition: {
                       duration: 0.3,
-                      type: 'keyframes',
+                      type: 'spring',
                     },
                   }}
                   exit={{
@@ -280,7 +290,7 @@ export const Cart = () => {
                     opacity: 1,
                     transition: {
                       duration: 0.3,
-                      type: 'keyframes',
+                      type: 'spring',
                     },
                   }}
                   exit={{
@@ -299,7 +309,7 @@ export const Cart = () => {
           </Box>
 
           {items.length > 0 ? (
-            <Stack width={1}>
+            <Stack width={1} position='relative' zIndex={10}>
               <Stack p={2} justifyContent='space-between' direction='row'>
                 <Typography>Total: </Typography>
                 <Typography fontWeight={600}>

@@ -12,7 +12,7 @@ export type TOrder = {
   id: string;
   _id: string;
   orderDetails: {
-    medicineId: string;
+    medicine: TMedicine;
     quantity: number;
     _id: string;
   }[];
@@ -21,4 +21,6 @@ export type TOrder = {
   userId: string;
   status: string;
   address: string;
+  createdAt: string;
+  updatedAt: string;
 };
