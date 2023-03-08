@@ -1,6 +1,4 @@
-import { useEffect } from 'react';
 import { SectionContainer } from '../components/SectionContainer';
-import { useGetMedicines } from '@/features/medicines/api/getMedicines';
 import { MedicineCardContainer } from '@/features/medicines/components/MedicineCardContainer';
 import { MyPage } from '@/components/MyPage';
 

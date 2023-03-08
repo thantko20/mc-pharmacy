@@ -1,6 +1,13 @@
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { useDisclosure } from '@/hooks/useDisclosure';
-import { Add, Close, Remove, ShoppingCart } from '@mui/icons-material';
+import {
+  Add,
+  Close,
+  Delete,
+  DeleteOutline,
+  Remove,
+  ShoppingCart,
+} from '@mui/icons-material';
 import Image from 'mui-image';
 import {
   Badge,
@@ -65,6 +72,7 @@ export const Cart = () => {
     increaseQuantity,
     decreaseQuantity,
     calculateTotalAmount,
+    removeFromCart,
   } = useCart();
 
   const mutation = useCreateOrder();
@@ -111,7 +119,7 @@ export const Cart = () => {
 
   return (
     <>
-      <IconButton onClick={onOpen} size='large'>
+      <IconButton onClick={onOpen} size='large' aria-label='Open shopping cart'>
         <Badge badgeContent={totalItems()} color='primary'>
           <ShoppingCart />
         </Badge>
@@ -186,7 +194,13 @@ export const Cart = () => {
                         <ListItem key={item._id} divider>
                           <Grid container spacing={2} direction='row'>
                             <Grid item xs='auto'>
-                              <Box boxShadow={2}>
+                              <Box
+                                boxShadow={2}
+                                sx={{
+                                  borderRadius: 2,
+                                  overflow: 'hidden',
+                                }}
+                              >
                                 <Image
                                   src={item.pictureUrls[0]}
                                   width={100}
@@ -214,7 +228,11 @@ export const Cart = () => {
                                     {item.price.toLocaleString()} MMK
                                   </Typography>
                                 </Stack>
-                                <Box>
+                                <Stack
+                                  direction='row'
+                                  justifyContent='space-between'
+                                  alignItems='center'
+                                >
                                   <EditQuantity
                                     increaseQuantity={() =>
                                       increaseQuantity(item._id)
@@ -224,7 +242,14 @@ export const Cart = () => {
                                     }
                                     quantity={item.quantity}
                                   />
-                                </Box>
+                                  <IconButton
+                                    aria-label='remove item from cart'
+                                    onClick={() => removeFromCart(item._id)}
+                                    color='error'
+                                  >
+                                    <DeleteOutline />
+                                  </IconButton>
+                                </Stack>
                               </Stack>
                             </Grid>
                           </Grid>

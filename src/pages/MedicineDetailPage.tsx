@@ -48,10 +48,15 @@ export default function MedicineDetailPage() {
               sx={{
                 width: 1,
                 height: 1,
-                maxWidth: 500,
+                maxWidth: {
+                  xs: 600,
+                  md: 400,
+                },
                 maxHeight: 500,
                 alignSelf: 'center',
-                borderRadius: '0.25rem',
+                borderRadius: 2,
+                overflow: 'hidden',
+                flexShrink: 1,
               }}
             >
               <Image
@@ -60,7 +65,11 @@ export default function MedicineDetailPage() {
                 duration={300}
               />
             </Paper>
-            <Box>
+            <Box
+              sx={{
+                flexShrink: 2,
+              }}
+            >
               <Typography variant='h3' fontWeight={600}>
                 {data?.payload.name}
               </Typography>
