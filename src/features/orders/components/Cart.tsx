@@ -39,7 +39,14 @@ const EditQuantity = ({
         <Remove />
       </IconButton>
       <Box>
-        <Typography>{quantity.toString(10).padStart(2, '0')}</Typography>
+        <Typography
+          sx={{
+            letterSpacing: 2,
+            fontWeight: 'bold',
+          }}
+        >
+          {quantity.toString(10).padStart(2, '0')}
+        </Typography>
       </Box>
       <IconButton onClick={increaseQuantity} aria-label='increase quantity'>
         <Add />
@@ -50,8 +57,14 @@ const EditQuantity = ({
 
 export const Cart = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { totalItems, items, clearCart, increaseQuantity, decreaseQuantity } =
-    useCart();
+  const {
+    totalItems,
+    items,
+    clearCart,
+    increaseQuantity,
+    decreaseQuantity,
+    calculateTotalAmount,
+  } = useCart();
 
   const mutation = useCreateOrder();
 
@@ -223,34 +236,42 @@ export const Cart = () => {
           </Box>
 
           {items.length > 0 ? (
-            <Stack direction='row' justifyContent='space-between'>
-              {checkOutStatus === 'preview' ? (
-                <>
-                  <Button disabled>Back</Button>
-                  <Button
-                    onClick={() => {
-                      if (items.length > 0) {
-                        setCheckoutStatus('address');
-                      }
-                    }}
-                  >
-                    Next
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button onClick={() => setCheckoutStatus('preview')}>
-                    Back
-                  </Button>
-                  <LoadingButton
-                    onClick={() => checkOut({ address })}
-                    loading={mutation.isLoading}
-                    disabled={!!!address}
-                  >
-                    Checkout
-                  </LoadingButton>
-                </>
-              )}
+            <Stack width={1}>
+              <Stack p={2} justifyContent='space-between' direction='row'>
+                <Typography>Total: </Typography>
+                <Typography fontWeight={600}>
+                  {calculateTotalAmount().toLocaleString()} MMK
+                </Typography>
+              </Stack>
+              <Stack direction='row' justifyContent='space-between' p={2}>
+                {checkOutStatus === 'preview' ? (
+                  <>
+                    <Button disabled>Back</Button>
+                    <Button
+                      onClick={() => {
+                        if (items.length > 0) {
+                          setCheckoutStatus('address');
+                        }
+                      }}
+                    >
+                      Next
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button onClick={() => setCheckoutStatus('preview')}>
+                      Back
+                    </Button>
+                    <LoadingButton
+                      onClick={() => checkOut({ address })}
+                      loading={mutation.isLoading}
+                      disabled={!!!address}
+                    >
+                      Checkout
+                    </LoadingButton>
+                  </>
+                )}
+              </Stack>
             </Stack>
           ) : null}
         </Box>

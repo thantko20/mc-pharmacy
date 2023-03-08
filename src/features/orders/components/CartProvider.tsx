@@ -19,6 +19,7 @@ type TCartContext = {
   decreaseQuantity: (id: string) => void;
   totalItems: () => number;
   clearCart: () => void;
+  calculateTotalAmount: () => number;
 };
 
 const CartContext = createContext<TCartContext>({
@@ -29,6 +30,7 @@ const CartContext = createContext<TCartContext>({
   decreaseQuantity: (id: string) => {},
   totalItems: () => 0,
   clearCart: () => {},
+  calculateTotalAmount: () => 0,
 });
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
@@ -114,6 +116,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setItems([]);
   };
 
+  const calculateTotalAmount = () => {
+    return items.reduce((prev, curr) => prev + curr.quantity * curr.price, 0);
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -124,6 +130,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         items,
         totalItems,
         clearCart,
+        calculateTotalAmount,
       }}
     >
       {children}
