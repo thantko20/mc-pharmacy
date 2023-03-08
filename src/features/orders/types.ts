@@ -1,6 +1,8 @@
+import { TMedicine } from '../medicines/types';
+
 export type TCreateOrderPayload = {
   orderDetails: {
-    medicine: string;
+    medicine: TMedicine;
     quantity: number;
   }[];
   address: string;

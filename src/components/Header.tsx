@@ -97,6 +97,7 @@ const LogoutMenuItem = () => {
 const ProfileMenu = ({ user }: { user: TUser }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const anchorRef = useRef<HTMLButtonElement>(null);
+  const navigate = useNavigate();
 
   return (
     <Box>
@@ -165,7 +166,11 @@ const ProfileMenu = ({ user }: { user: TUser }) => {
             width: 1,
           }}
         >
-          <ProfileMenuItem text='Orders' icon={<ReceiptLong />} />
+          <ProfileMenuItem
+            text='Orders'
+            icon={<ReceiptLong />}
+            onClick={() => navigate('/orders')}
+          />
           <LogoutMenuItem />
         </MenuList>
       </Menu>

@@ -161,7 +161,7 @@ export const Cart = () => {
                 <Box
                   component={motion.div}
                   key='preview'
-                  initial={{ x: -100, opacity: 0.5 }}
+                  initial={{ x: '-100%', opacity: 0.5 }}
                   animate={{
                     x: 0,
                     opacity: 1,
@@ -171,7 +171,7 @@ export const Cart = () => {
                     },
                   }}
                   exit={{
-                    x: -100,
+                    x: '-100%',
                     opacity: 0,
                   }}
                 >
@@ -247,7 +247,7 @@ export const Cart = () => {
                   alignItems='center'
                   component={motion.div}
                   initial={{
-                    x: 100,
+                    x: '100%',
                     opacity: 0.5,
                   }}
                   animate={{
@@ -259,7 +259,7 @@ export const Cart = () => {
                     },
                   }}
                   exit={{
-                    x: 100,
+                    x: '100%',
                     opacity: 0,
                   }}
                 >

@@ -8,6 +8,7 @@ import { useAuth } from './features/auth/components/AuthProvider';
 import { ReactNode } from 'react';
 import MedicineDetailPage from './pages/MedicineDetailPage';
 import RegistrationPage from './pages/RegistrationPage';
+import OrdersPage from './pages/OrdersPage';
 
 const AuthRoute = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
@@ -53,6 +54,10 @@ export const router = createBrowserRouter([
       {
         path: '/medicines/:medicineId',
         element: <MedicineDetailPage />,
+      },
+      {
+        path: '/orders',
+        element: <OrdersPage />,
       },
     ],
   },
