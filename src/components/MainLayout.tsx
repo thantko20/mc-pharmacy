@@ -1,21 +1,11 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  CircularProgress,
-  Stack,
-  Typography,
-} from '@mui/material';
-import { Outlet, useNavigate, Link as RouterLink } from 'react-router-dom';
+import { Box, CircularProgress } from '@mui/material';
+import { Outlet } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 
-import { SectionContainer } from './SectionContainer';
 import { useAuth } from '@/features/auth/components/AuthProvider';
 import { CartProvider } from '@/features/orders/components/CartProvider';
 import { CallNotification } from '@/features/calls/components/CallNotification';
-import { Cart } from '@/features/orders/components/Cart';
-import { green } from '@mui/material/colors';
 import { Header } from './Header';
-import { AnimatePresence } from 'framer-motion';
 
 export const MainLayout = () => {
   const { isCheckingAuth } = useAuth();
@@ -32,7 +22,7 @@ export const MainLayout = () => {
           display='flex'
           justifyContent='center'
           alignItems='center'
-          bgcolor='white'
+          bgcolor='palette.background.paper'
           zIndex={10}
         >
           <CircularProgress />
