@@ -16,6 +16,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
@@ -43,19 +45,8 @@ const ProfileMenuItem = ({
 }) => {
   return (
     <MenuItem onClick={onClick}>
-      <Stack width={1} direction='row' spacing={1} alignItems='center'>
-        {icon ? (
-          <Icon
-            sx={{
-              width: 32,
-              height: 32,
-            }}
-          >
-            {icon}
-          </Icon>
-        ) : null}
-        <Typography>{text}</Typography>
-      </Stack>
+      {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
+      <ListItemText>{text}</ListItemText>
     </MenuItem>
   );
 };
