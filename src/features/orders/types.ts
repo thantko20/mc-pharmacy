@@ -8,6 +8,8 @@ export type TCreateOrderPayload = {
   address: string;
 };
 
+export type TOrderStatus = 'pending' | 'deliver' | 'complete' | 'cancel';
+
 export type TOrder = {
   id: string;
   _id: string;
@@ -19,7 +21,7 @@ export type TOrder = {
   totalQuantity: number;
   totalPrice: number;
   userId: string;
-  status: 'pending' | 'deliver' | 'complete' | 'cancel';
+  status: TOrderStatus;
   address: string;
   createdAt: string;
   updatedAt: string;
