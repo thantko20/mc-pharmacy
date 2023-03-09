@@ -24,13 +24,14 @@ import TablePaginationActions from '@mui/material/TablePagination/TablePaginatio
 import { format } from 'date-fns';
 import { useGetAllOrders } from '../api/getAllOrders';
 import { useRef, useState } from 'react';
-import { TOrderStatus } from '../types';
+import { TOrder, TOrderStatus } from '../types';
 import { useDisclosure } from '@/hooks/useDisclosure';
 import { MoreVert } from '@mui/icons-material';
 import { useCancelOrder } from '../api/cancelOrder';
 import { toast } from 'react-hot-toast';
 import { useQueryClient } from 'react-query';
 import { LoadingButton } from '@mui/lab';
+import { TSuccessResponse } from '@/types';
 
 const OrderCancel = ({ orderId }: { orderId: string }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();

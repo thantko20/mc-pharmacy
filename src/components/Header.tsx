@@ -30,6 +30,7 @@ import {
   ReceiptLong,
 } from '@mui/icons-material';
 import Image from 'mui-image';
+import { useQueryClient } from 'react-query';
 
 const ProfileMenuItem = ({
   text,
@@ -62,6 +63,7 @@ const ProfileMenuItem = ({
 const LogoutMenuItem = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { logoutFn } = useAuth();
+  const queryClient = useQueryClient();
 
   return (
     <>
@@ -82,6 +84,7 @@ const LogoutMenuItem = () => {
               color='error'
               onClick={() => {
                 logoutFn();
+                queryClient.clear();
                 onClose();
               }}
             >
