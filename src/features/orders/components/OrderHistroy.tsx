@@ -1,10 +1,16 @@
 import {
+  Button,
   Chip,
   CircularProgress,
-  Link,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Menu,
+  MenuItem,
+  MenuList,
   Paper,
-  Skeleton,
-  Stack,
   Table,
   TableBody,
   TableCell,
@@ -16,13 +22,103 @@ import {
 } from '@mui/material';
 import TablePaginationActions from '@mui/material/TablePagination/TablePaginationActions';
 import { format } from 'date-fns';
-import { Link as RouterLink } from 'react-router-dom';
 import { useGetAllOrders } from '../api/getAllOrders';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { TOrderStatus } from '../types';
+import { useDisclosure } from '@/hooks/useDisclosure';
+import { MoreVert } from '@mui/icons-material';
+import { useCancelOrder } from '../api/cancelOrder';
+import { toast } from 'react-hot-toast';
+import { useQueryClient } from 'react-query';
+import { LoadingButton } from '@mui/lab';
+
+const OrderCancel = ({ orderId }: { orderId: string }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const cancelOrderMutation = useCancelOrder();
+
+  const queryClient = useQueryClient();
+
+  const cancelOrder = (id: string) => {
+    cancelOrderMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success('Order cancelled.');
+        queryClient.invalidateQueries({
+          queryKey: 'orders',
+        });
+        onClose();
+      },
+    });
+  };
+
+  return (
+    <>
+      <MenuItem onClick={onOpen}>Cancel this order</MenuItem>
+      <Dialog open={isOpen} onClose={onClose} fullWidth maxWidth='sm'>
+        <DialogTitle>Cancel Order</DialogTitle>
+        <DialogContent>Are you sure about that?</DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} disabled={cancelOrderMutation.isLoading}>
+            Cancel
+          </Button>
+          <LoadingButton
+            loading={cancelOrderMutation.isLoading}
+            onClick={() => cancelOrder(orderId)}
+            color='error'
+          >
+            Proceed
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+};
+
+const OrderActionMenu = ({
+  orderId,
+  canCancel,
+}: {
+  orderId: string;
+  canCancel: boolean;
+}) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const anchorEl = useRef<HTMLButtonElement>(null);
+
+  return (
+    <>
+      <IconButton aria-label='actions button' ref={anchorEl} onClick={onOpen}>
+        <MoreVert />
+      </IconButton>
+      <Menu open={isOpen} onClose={onClose} anchorEl={anchorEl.current}>
+        <MenuList>
+          <MenuItem>See Details</MenuItem>
+          {canCancel ? <OrderCancel orderId={orderId} /> : null}
+        </MenuList>
+      </Menu>
+    </>
+  );
+};
+
 export const OrderHistory = () => {
   const [page, setPage] = useState(0);
-  const { data, isLoading } = useGetAllOrders({ page: page + 1 });
+  const filter = {
+    page: page + 1,
+  };
+  const { data, isLoading } = useGetAllOrders(filter);
+  const cancelOrderMutation = useCancelOrder();
+  const queryClient = useQueryClient();
+
+  const cancelOrder = (id: string) => {
+    cancelOrderMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success('Order cancelled.');
+        queryClient.invalidateQueries({
+          queryKey: 'orders',
+        });
+      },
+    });
+  };
+
   return (
     <>
       {isLoading ? (
@@ -93,12 +189,10 @@ export const OrderHistory = () => {
                           {format(new Date(order.createdAt), 'PPpp')}
                         </TableCell>
                         <TableCell>
-                          <Link
-                            component={RouterLink}
-                            to={`/orders/${order._id}`}
-                          >
-                            See the details
-                          </Link>
+                          <OrderActionMenu
+                            canCancel={order.status === 'pending'}
+                            orderId={order._id}
+                          />
                         </TableCell>
                       </TableRow>
                     );
