@@ -62,6 +62,7 @@ const useRoom = ({
 
   useEffect(() => {
     const callEndedListener = (payload: TCallEndedPayload) => {
+      console.log('call ended');
       toast(`Other participant hanged up the call.`, {
         icon: <Info />,
       });
@@ -315,9 +316,11 @@ export const Room = ({
               direction='row'
               alignItems='center'
               spacing={4}
-              bgcolor={grey[200]}
               p={2}
               borderRadius='9999px'
+              sx={{
+                bgcolor: grey[900],
+              }}
             >
               <IconButton
                 onClick={toggleVideo}

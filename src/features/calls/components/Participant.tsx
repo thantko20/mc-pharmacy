@@ -123,7 +123,7 @@ export const Participant = ({ participant, name }: ParticipantProps) => {
           objectFit: 'contain',
           borderRadius: '0.75rem',
           overflow: 'hidden',
-          backgroundColor: grey[100],
+          backgroundColor: grey[900],
           transform: 'rotateY(180deg)',
         }}
       ></Box>

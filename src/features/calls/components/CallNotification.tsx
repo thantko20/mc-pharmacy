@@ -25,7 +25,7 @@ const IncomingCallToast = ({
       <Stack
         direction='row'
         spacing={4}
-        bgcolor='white'
+        bgcolor='palette.background.paper'
         component={Paper}
         padding={2}
         elevation={4}
@@ -52,6 +52,9 @@ const IncomingCallToast = ({
             <CallEnd />
           </Button>
           <Button
+            sx={{
+              color: 'white',
+            }}
             color='success'
             onClick={() => {
               toast.dismiss(t.id);
